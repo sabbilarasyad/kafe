@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('stok_masuk', function (Blueprint $table) {
             $table->id();
             $table->date('tanggal');
-            $table->foreignId('bahan_id')->constrained('bahan')->onDelete('cascade');
+            $table->foreignId('bahan_id')->constrained('bahan')->restrictOnDelete();
             $table->decimal('jumlah', 10, 2);
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->timestamps();
         });
     }

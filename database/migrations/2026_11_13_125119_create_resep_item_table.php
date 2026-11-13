@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('resep_item', function (Blueprint $table) {
             $table->id();
             $table->foreignId('menu_id')->constrained('menu')->onDelete('cascade');
-            $table->foreignId('bahan_id')->constrained('bahan')->onDelete('cascade');
+            $table->foreignId('bahan_id')->constrained('bahan')->restrictOnDelete();
             $table->decimal('takaran', 10, 2);
             $table->timestamps();
         });
