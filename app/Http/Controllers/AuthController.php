@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -55,5 +56,28 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login');
+    }
+
+    // Tampilkan form ganti password.
+    public function formGantiPassword()
+    {
+        return view('ganti-password');
+    }
+
+    // Proses ganti password.
+    public function gantiPassword(Request $request)
+    {
+        $request->validate([
+            // current_password = cocok dengan password akun yang sedang login.
+            'password_lama' => ['required', 'current_password'],
+            // min:8 = minimal 8 karakter, confirmed = harus sama dengan password_baru_confirmation.
+            'password_baru' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->password_baru),
+        ]);
+
+        return redirect('/dashboard')->with('status', 'Password berhasil diganti.');
     }
 }

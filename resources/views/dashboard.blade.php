@@ -4,4 +4,7 @@
 <form method="POST" action="/logout">
     @csrf
     <button type="submit">Keluar</button>
+    <a href="/ganti-password">Ganti password</a>
+    <p>{{ session('status') }}</p>
+    
 </form>
