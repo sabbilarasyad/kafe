@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BahanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,6 +16,9 @@ Route::get('/uji-kasir', fn () => 'Halo Kasir')->middleware(['auth', 'peran:kasi
 Route::middleware(['auth', 'peran:kasir,manajer'])->group(function () {
     Route::get('/ganti-password', [AuthController::class, 'formGantiPassword']);
     Route::post('/ganti-password', [AuthController::class, 'gantiPassword']);
+});
+Route::middleware(['auth', 'peran:manajer'])->group(function () {
+    Route::resource('bahan', BahanController::class)->except(['show', 'destroy']);
 });
 
 
