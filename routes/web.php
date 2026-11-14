@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BahanController;
+use App\Http\Controllers\MenuController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,6 +21,8 @@ Route::middleware(['auth', 'peran:kasir,manajer'])->group(function () {
 Route::middleware(['auth', 'peran:manajer'])->group(function () {
     Route::resource('bahan', BahanController::class)->except(['show', 'destroy']);
 });
+Route::resource('menu', MenuController::class)->except(['edit', 'destroy']);
+Route::patch('menu/{menu}/aktif', [MenuController::class, 'ubahAktif']);
 
 
 Route::get('/dashboard', function () {
