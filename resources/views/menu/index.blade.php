@@ -99,6 +99,7 @@
                             <th class="px-6 py-3">Bahan</th>
                             <th class="py-3">Takaran</th>
                             <th class="py-3">Satuan</th>
+                            <th class="py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,12 +108,21 @@
                                 <td class="px-6 py-3">{{ $item->bahan->nama }}</td>
                                 <td>{{ rtrim(rtrim(number_format($item->takaran, 2, ',', '.'), '0'), ',') }}</td>
                                 <td>{{ $item->bahan->satuan }}</td>
+                                <td>
+                                    <a href="/resep/{{ $item->id }}/edit"
+                                       class="rounded-full border-[1.5px] border-[#b5452f] px-4 py-1 text-sm font-bold text-[#b5452f] hover:bg-[#b5452f] hover:text-[#fffdf7]">Edit</a>
+                                </td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="px-6 py-6 text-center text-[#6f6a5c]">Belum ada resep.</td></tr>
+                            <tr><td colspan="4" class="px-6 py-6 text-center text-[#6f6a5c]">Belum ada resep.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
+
+                <div class="border-t border-[#e6dcc0] p-6">
+                    <a href="/menu/{{ $terpilih->id }}/resep/create"
+                       class="inline-block rounded-xl bg-[#b5452f] px-6 py-3 font-bold text-[#fffdf7] hover:brightness-110">Tambah bahan</a>
+                </div>
             </section>
         @endif
     </div>
