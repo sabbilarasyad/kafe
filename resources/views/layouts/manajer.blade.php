@@ -31,7 +31,7 @@
                 ['Kelola bahan', '/bahan', 'bahan*'],
                 ['Menu & resep', '/menu', 'menu*'],
                 ['Stok masuk', '/stok-masuk', 'stok-masuk*'],
-                ['HPP & margin', '#', 'hpp*'],
+                ['HPP & margin', '/hpp', 'hpp*'],
                 ['Laporan', '#', 'laporan*'],
                 ['Impor CSV', '#', 'impor*'],
             ];

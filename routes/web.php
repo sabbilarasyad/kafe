@@ -6,6 +6,7 @@ use App\Http\Controllers\BahanController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ResepController;
 use App\Http\Controllers\StokMasukController;
+use App\Http\Controllers\HppController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'peran:manajer'])->group(function () {
     Route::put('resep/{resepItem}', [ResepController::class, 'update']);
     Route::get('stok-masuk', [StokMasukController::class, 'index']);
     Route::post('stok-masuk', [StokMasukController::class, 'store']);
+    Route::get('hpp', [HppController::class, 'index']);
 });
 
 Route::resource('menu', MenuController::class)->except(['edit', 'destroy']);
