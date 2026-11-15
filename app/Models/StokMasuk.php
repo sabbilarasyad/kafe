@@ -9,6 +9,7 @@ class StokMasuk extends Model
     protected $table = 'stok_masuk';
 
     protected $fillable = ['tanggal', 'bahan_id', 'jumlah', 'user_id'];
+    protected $casts = ['tanggal' => 'date'];
 
     public function bahan()
     {

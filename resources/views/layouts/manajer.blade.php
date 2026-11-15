@@ -30,7 +30,7 @@
             $menu = [
                 ['Kelola bahan', '/bahan', 'bahan*'],
                 ['Menu & resep', '/menu', 'menu*'],
-                ['Stok masuk', '#', 'stok-masuk*'],
+                ['Stok masuk', '/stok-masuk', 'stok-masuk*'],
                 ['HPP & margin', '#', 'hpp*'],
                 ['Laporan', '#', 'laporan*'],
                 ['Impor CSV', '#', 'impor*'],
