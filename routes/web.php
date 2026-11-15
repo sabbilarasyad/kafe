@@ -36,6 +36,7 @@ Route::middleware(['auth', 'peran:manajer'])->group(function () {
 
 Route::middleware(['auth', 'peran:kasir'])->group(function () {
     Route::get('pesanan/create', [PesananController::class, 'create']);
+    Route::post('pesanan', [PesananController::class, 'store']);
 });
 
 Route::resource('menu', MenuController::class)->except(['edit', 'destroy']);
