@@ -19,4 +19,16 @@ class Menu extends Model
     {
         return $this->hasMany(ResepItem::class);
     }
+
+    // Berapa porsi menu ini yang masih bisa dibuat dari stok sekarang.
+    public function porsiTersedia(): int
+    {
+        if ($this->resepItems->isEmpty()) {
+            return 0;
+        }
+
+        return (int) $this->resepItems
+            ->map(fn ($item) => floor($item->bahan->stok / (float)$item->takaran))
+            ->min();
+    }
 }

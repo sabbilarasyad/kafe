@@ -7,6 +7,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ResepController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\HppController;
+use App\Http\Controllers\PesananController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,10 +34,15 @@ Route::middleware(['auth', 'peran:manajer'])->group(function () {
     Route::get('hpp', [HppController::class, 'index']);
 });
 
+Route::middleware(['auth', 'peran:kasir'])->group(function () {
+    Route::get('pesanan/create', [PesananController::class, 'create']);
+});
+
 Route::resource('menu', MenuController::class)->except(['edit', 'destroy']);
 Route::patch('menu/{menu}/aktif', [MenuController::class, 'ubahAktif']);
 
-
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return request()->user()->role === 'kasir'
+        ? redirect('/pesanan/create')
+        : redirect('/bahan');
 })->middleware('auth');

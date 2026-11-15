@@ -13,7 +13,6 @@
             <tr class="bg-[#f7f2e6] text-sm font-bold text-[#6f6a5c]">
                 <th class="px-5 py-3">Nama bahan</th>
                 <th class="py-3">Satuan dasar</th>
-                <th class="py-3">Aksi</th>
                 <th class="py-3">Stok</th>
                 <th class="py-3">Batas minimum</th>
                 <th class="py-3">Harga / satuan</th>
@@ -34,9 +33,6 @@
                         @else
                             <span class="text-[#6f6a5c]">Belum ada</span>
                         @endif
-                    </td>
-                    <td>
-                        <a href="/resep/{{ $b->id }}/edit" class="rounded-full border-[1.5px] border-[#b5452f] px-4 py-1 text-sm font-bold text-[#b5452f] hover:bg-[#b5452f] hover:text-[#fffdf7]">Edit</a>
                     </td>
                     <td>
                         {{-- Aturan "menipis" dari soal: stok sama dengan atau kurang dari batas minimum. --}}
