@@ -13,12 +13,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->alias([
-        'peran' => \App\Http\Middleware\CekPeran::class,
-    ]);
+        $middleware->alias([
+            'peran' => \App\Http\Middleware\CekPeran::class,
+            'wajib.ganti' => \App\Http\Middleware\WajibGantiPassword::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Semua error di /api dijawab JSON (bukan halaman HTML atau redirect).
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('api/*') || $request->expectsJson()
         );
     })->create();
