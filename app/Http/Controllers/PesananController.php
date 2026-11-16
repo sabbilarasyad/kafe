@@ -105,8 +105,7 @@ class PesananController extends Controller
             return $pesanan;
         });
 
-        // SEMENTARA: halaman struk dibuat di langkah berikutnya.
-        return redirect('/pesanan/create')->with('status', 'Pesanan #' . $pesanan->id . ' dibuat.');
+        return redirect('/pesanan/' . $pesanan->id . '/struk')->with('baru', true);
     }
 
     // Service 5% dari subtotal, pajak 10% dari (subtotal + service).
@@ -171,6 +170,12 @@ class PesananController extends Controller
         }
 
         return $pesan;
+    }
+
+    public function struk(Pesanan $pesanan){
+        $pesanan->load('items.menu');
+
+        return view('pesanan.struk', compact('pesanan'));
     }
 
     // Merapikan angka: 450.00 jadi 450.
