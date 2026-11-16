@@ -178,6 +178,63 @@ class PesananController extends Controller
         return view('pesanan.struk', compact('pesanan'));
     }
 
+    //Daftar pesanan + detail satu pesanan dikanan
+    public function index(Request $request)
+    {
+        $status = $request->query('status');
+
+        $pesanan = Pesanan::with('items.menu')
+            ->when($status, fn ($q) => $q->where('status', $status))
+            ->orderByDesc('id')
+            ->limit(100)
+            ->get();
+            
+            // Pesanan yang sedang dilihat : ?pilih=ID, atau yang paling baru.
+            $terpilih = $pesanan->firstWhere('id', (int) $request->query('pilih')) ?? $pesanan->first();
+
+            return view('pesanan.index', compact('pesanan', 'terpilih', 'status'));
+    }
+
+    // Naikkan status satu tingkat: Baru -> Diproses -> Selesai.
+    public function ubahStatus(Pesanan $pesanan)
+    {
+       // Urutan yang diizinkan. Status lain (Selesai Dibatalkan) tidak punya berikutnya.
+       $urutan = ['Baru' => 'Diproses', 'Diproses' => 'Selesai'];
+       
+       //Server yang menentukan status berikutnya, bukan browser.
+       $berikutnya = $urutan[$pesanan->status] ?? null;
+
+       if ($berikutnya === null) {
+        return back()->withErrors(['status' => 'Status pesanan ini tidak diubah lagi.']);
+       }
+
+       $pesanan->update(['status' => $berikutnya]);
+
+       return back()->with('status', 'Pesanan sekarang berstatus' . $berikutnya . '.');
+    }
+
+    //Batalkan pesanan (hanya saat Baru) dan kembalikan stok.
+    public function batal(Pesanan $pesanan)
+    {
+        // Hanya boleh saat status Baru.
+        if ($pesanan->status !== 'Baru'){
+            return back()->withErrors(['status' => 'Pesanan hanya bisa dibatalkan saat berstatus Baru.']);
+        }
+
+        // Kembalikan stok dan ubah status dalam satu transaksi;
+        // berhasil bersama atau batal bersama
+        DB::transaction(function () use ($pesanan) {
+            //Kembalikan persis jumlah yang dulu dipotong (dari catatan pesanan_bahan).
+            foreach ($pesanan->bahanTerpotong as $baris) {
+                Bahan::findOrFail($baris->bahan_id)->increment('stok', $baris->jumlah);
+            }
+
+            $pesanan->update(['status' => 'Dibatalkan']);
+        });
+
+        return back()->with('status', 'Pesanan dibatalkan, stok dikembalikan.');
+    }
+
     // Merapikan angka: 450.00 jadi 450.
     private function angka(float $nilai): string
     {
