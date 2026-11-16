@@ -32,7 +32,7 @@
                 ['Menu & resep', '/menu', 'menu*'],
                 ['Stok masuk', '/stok-masuk', 'stok-masuk*'],
                 ['HPP & margin', '/hpp', 'hpp*'],
-                ['Laporan', '#', 'laporan*'],
+                ['Laporan', '/laporan', 'laporan*'],
                 ['Impor CSV', '#', 'impor*'],
             ];
         @endphp

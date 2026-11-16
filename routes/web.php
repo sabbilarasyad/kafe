@@ -8,6 +8,7 @@ use App\Http\Controllers\ResepController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\HppController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'peran:manajer'])->group(function () {
     Route::get('stok-masuk', [StokMasukController::class, 'index']);
     Route::post('stok-masuk', [StokMasukController::class, 'store']);
     Route::get('hpp', [HppController::class, 'index']);
+    Route::get('laporan', [LaporanController::class, 'index']);
 });
 
 Route::middleware(['auth', 'peran:kasir'])->group(function () {

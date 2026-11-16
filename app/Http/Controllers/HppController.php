@@ -20,7 +20,7 @@ class HppController extends Controller
         $dilewati = [];
 
         foreach (Menu::with('resepItems.bahan')->orderBy('nama')->get() as $menu) {
-            $hpp = $this->hitung($menu);
+            $hpp = $menu->hpp();
 
             // Belum ada resep atau ada bahan tanpa harga: tidak bisa dihitung.
             if ($hpp === null) {
