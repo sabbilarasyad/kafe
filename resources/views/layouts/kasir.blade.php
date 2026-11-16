@@ -30,7 +30,7 @@
             $menu = [
                 ['Buat pesanan', '/pesanan/create', 'pesanan/create*'],
                 ['Daftar pesanan', '/pesanan', 'pesanan'],
-                ['Reset password pelanggan', '#', 'reset-password*'],
+                ['Reset password pelanggan', '/reset-password', 'reset-password*'],
             ];
         @endphp
 

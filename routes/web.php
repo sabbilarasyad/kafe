@@ -9,6 +9,7 @@ use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\HppController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ResetPasswordController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,6 +44,8 @@ Route::middleware(['auth', 'peran:kasir'])->group(function () {
     Route::get('pesanan', [PesananController::class, 'index']);
     Route::post('pesanan/{pesanan}/status', [PesananController::class, 'ubahStatus']);
     Route::post('pesanan/{pesanan}/batal', [PesananController::class, 'batal']);
+    Route::get('reset-password', [ResetPasswordController::class, 'index']);
+    Route::post('reset-password', [ResetPasswordController::class, 'reset']);
 });
 
 Route::resource('menu', MenuController::class)->except(['edit', 'destroy']);
