@@ -15,6 +15,14 @@ class ImporDataAwal extends Command
      */
     public function handle()
     {
-        //
+        // Membaca dan menghitung baris CSV.
+        $path = database_path('data/awal/bahan.csv');
+        $handle = fopen($path, 'r');
+        $jumlah = 0;
+        while (fgetcsv($handle) !== false){
+            $jumlah++;
+        }
+        fclose($handle);
+        $this->info('Baris data bahan: ' . ($jumlah - 1));
     }
 }
