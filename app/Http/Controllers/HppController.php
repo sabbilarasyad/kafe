@@ -20,9 +20,9 @@ class HppController extends Controller
         $dilewati = [];
 
         foreach (Menu::with('resepItems.bahan')->orderBy('nama')->get() as $menu) {
+            // HPP dihitung di Menu::hpp(). Null = belum ada resep atau ada bahan tanpa harga.
             $hpp = $menu->hpp();
 
-            // Belum ada resep atau ada bahan tanpa harga: tidak bisa dihitung.
             if ($hpp === null) {
                 $dilewati[] = $menu->nama;
                 continue;
@@ -45,29 +45,4 @@ class HppController extends Controller
 
         return view('hpp.index', compact('berhasil', 'diperbarui', 'baris', 'dilewati', 'jumlah', 'rata', 'tertinggi'));
     }
-
-    // BAGIANMU: hitung HPP satu menu (lihat alur di bawah).
-        // Hitung HPP satu menu. Hasilnya angka, atau null kalau tidak bisa dihitung.
-    private function hitung(Menu $menu): ?float
-    {
-        // Menu tanpa resep: tidak bisa dihitung.
-        if ($menu->resepItems->isEmpty()) {
-            return null;
-        }
-
-        $total = 0;
-
-        foreach ($menu->resepItems as $item) {
-            // Bahan belum punya harga: HPP tidak bisa dihitung (bukan dianggap Rp0).
-            if ($item->bahan->harga_per_satuan === null) {
-                return null;
-            }
-
-            // Rumus soal: takaran x harga per satuan dasar, lalu dijumlahkan.
-            $total += (float) $item->takaran * (float) $item->bahan->harga_per_satuan;
-        }
-
-        return $total;
-    }
 }
-    
