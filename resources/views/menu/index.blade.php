@@ -1,6 +1,6 @@
 @extends('layouts.manajer')
 
-@section('judul', 'Menu & resep')
+@section('judul', 'Menu')
 
 @section('isi')
 <div class="flex items-start gap-8">
@@ -37,9 +37,8 @@
         @endforeach
     </section>
 
-    {{-- Kanan: detail dan resep --}}
-    <div class="min-w-0 flex-1 space-y-6">
-
+    {{-- Kanan: detail menu --}}
+    <div class="min-w-0 flex-1">
         <section class="rounded-[22px] border border-[#cdbf9f] bg-[#fffdf7] p-6 shadow-[0_3px_0_#cdbf9f]">
             <h2 class="text-xl font-bold">{{ $terpilih->exists ? 'Detail menu: ' . $terpilih->nama : 'Tambah menu' }}</h2>
 
@@ -66,8 +65,13 @@
                 </div>
                 <div>
                     <label class="text-sm font-bold text-[#6f6a5c]">Kategori</label>
-                    <input type="text" name="kategori" value="{{ old('kategori', $terpilih->kategori) }}"
-                           class="mt-1 h-11 w-full rounded-xl border border-[#cdbf9f] px-4 outline-none focus:border-[#b5452f]">
+                    <select name="kategori"
+                            class="mt-1 h-11 w-full rounded-xl border border-[#cdbf9f] bg-[#fffdf7] px-4 outline-none focus:border-[#b5452f]">
+                        <option value="">Pilih kategori</option>
+                        @foreach ($kategori as $k)
+                            <option value="{{ $k }}" @selected(old('kategori', $terpilih->kategori) === $k)>{{ $k }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="flex items-end gap-3">
@@ -90,41 +94,6 @@
                 </form>
             @endif
         </section>
-
-        @if ($terpilih->exists)
-            <section class="overflow-hidden rounded-[22px] border border-[#cdbf9f] bg-[#fffdf7] shadow-[0_3px_0_#cdbf9f]">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="bg-[#f7f2e6] text-sm font-bold text-[#6f6a5c]">
-                            <th class="px-6 py-3">Bahan</th>
-                            <th class="py-3">Takaran</th>
-                            <th class="py-3">Satuan</th>
-                            <th class="py-3">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($terpilih->resepItems as $item)
-                            <tr class="border-t border-[#e6dcc0]">
-                                <td class="px-6 py-3">{{ $item->bahan->nama }}</td>
-                                <td>{{ rtrim(rtrim(number_format($item->takaran, 2, ',', '.'), '0'), ',') }}</td>
-                                <td>{{ $item->bahan->satuan }}</td>
-                                <td>
-                                    <a href="/resep/{{ $item->id }}/edit"
-                                       class="rounded-full border-[1.5px] border-[#b5452f] px-4 py-1 text-sm font-bold text-[#b5452f] hover:bg-[#b5452f] hover:text-[#fffdf7]">Edit</a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="4" class="px-6 py-6 text-center text-[#6f6a5c]">Belum ada resep.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-
-                <div class="border-t border-[#e6dcc0] p-6">
-                    <a href="/menu/{{ $terpilih->id }}/resep/create"
-                       class="inline-block rounded-xl bg-[#b5452f] px-6 py-3 font-bold text-[#fffdf7] hover:brightness-110">Tambah bahan</a>
-                </div>
-            </section>
-        @endif
     </div>
 </div>
 @endsection
