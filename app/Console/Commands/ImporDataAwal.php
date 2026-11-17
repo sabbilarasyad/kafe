@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use App\Models\Bahan;
 
 #[Signature('data:impor-awal')]
 #[Description('Command description')]
@@ -26,11 +27,14 @@ class ImporDataAwal extends Command
         $baris = 1;
 
         while (($kolom = fgetcsv($handle)) !== false) {
+
         $baris++;
+
         $nama = trim($kolom[1]);
         $stok = trim($kolom[2]);
         $satuan = trim($kolom[3]);
         $harga = trim($kolom[4]);
+
         if ($satuan === 'kg') {
             $stok = $kolom[2] * 1000;
             $harga = $kolom[4] / 1000;
@@ -40,7 +44,19 @@ class ImporDataAwal extends Command
             $harga = $kolom[4] / 1000;
             $satuan = 'ml';
         }
+
         $this->line("$nama | $stok | $harga | $satuan");
+
+        $nama_kunci = strtolower(trim($nama));
+        Bahan::updateOrCreate(
+            [ 'nama_kunci' => $nama_kunci ],
+            [   
+                'nama' => $nama,
+                'satuan' => $satuan,
+                'stok' => $stok,
+                'harga_persatuan' => $harga,
+            ]
+        );
         $berhasil++;
         }
 
