@@ -29,7 +29,8 @@
         @php
             $menu = [
                 ['Kelola bahan', '/bahan', 'bahan*'],
-                ['Menu & resep', '/menu', 'menu*'],
+                ['Menu', '/menu', 'menu*'],
+                ['Resep', '/resep', 'resep*'],
                 ['Stok masuk', '/stok-masuk', 'stok-masuk*'],
                 ['HPP & margin', '/hpp', 'hpp*'],
                 ['Laporan', '/laporan', 'laporan*'],
