@@ -10,33 +10,45 @@ class SupplierService
     public function sinkronHarga(): bool
     {
         try {
-            // Tanya harga ke Supplier. Alamat dan key dibaca dari .env.
             $respons = Http::withHeaders([
                 'X-API-Key' => config('services.supplier.key'),
             ])->timeout(5)->get(config('services.supplier.url') . '/harga-bahan');
 
-            // Supplier menjawab tapi menolak (mis. 401 key salah):
-            // jangan ubah apa pun, harga lama tetap dipakai.
+            // Supplier menjawab tapi menolak (mis. 401 key salah): harga lama tetap dipakai.
             if (! $respons->successful()) {
                 return false;
             }
 
-            // Tanggal pembaruan harga dari Supplier.
             $tanggal = $respons->json('diperbarui');
+            $daftar = $respons->json('data');
 
-            foreach ($respons->json('data') as $item) {
-                // Samakan bentuk nama supaya cocok dengan kolom nama_kunci.
-                $kunci = strtolower(trim($item['nama']));
+            if (! is_array($daftar)) {
+                return false;
+            }
 
-                // Cari bahan yang sama di database.
-                $bahan = Bahan::where('nama_kunci', $kunci)->first();
+            foreach ($daftar as $item) {
+                // 1. Cocokkan lewat kode (BHN-001 dst.).
+                $bahan = null;
+                if (! empty($item['kode'])) {
+                    $bahan = Bahan::where('kode', $item['kode'])->first();
+                }
+
+                // 2. Cadangan: cocokkan lewat nama_kunci kalau kode tidak ada.
+                if (! $bahan && ! empty($item['nama'])) {
+                    $bahan = Bahan::where('nama_kunci', strtolower(trim($item['nama'])))->first();
+                }
 
                 // Bahan yang tidak dikenal dilewati, tidak dibuat baru.
                 if (! $bahan) {
                     continue;
                 }
 
-                // Simpan harga baru dan tanggalnya.
+                // Satuan harus sama. Kalau tidak, harga tidak boleh ditimpa
+                // karena artinya berbeda (mis. per g vs per kg).
+                if (($item['satuan_dasar'] ?? null) !== $bahan->satuan) {
+                    continue;
+                }
+
                 $bahan->update([
                     'harga_per_satuan' => $item['harga_per_satuan'],
                     'harga_diperbarui' => $tanggal,
@@ -44,9 +56,9 @@ class SupplierService
             }
 
             return true;
-        } catch (\Exception $e) {
-            // Internet mati atau timeout: jangan crash,
-            // harga dan tanggal lama dibiarkan (ini fallback-nya).
+        } catch (\Throwable $e) {
+            // Internet mati, timeout, atau format tak terduga: jangan crash.
+            // Harga dan tanggal lama dibiarkan, itulah fallback-nya.
             return false;
         }
     }
