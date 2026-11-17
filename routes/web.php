@@ -10,6 +10,7 @@ use App\Http\Controllers\HppController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\ImporController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +36,8 @@ Route::middleware(['auth', 'peran:manajer'])->group(function () {
     Route::post('stok-masuk', [StokMasukController::class, 'store']);
     Route::get('hpp', [HppController::class, 'index']);
     Route::get('laporan', [LaporanController::class, 'index']);
+    Route::get('impor', [ImporController::class, 'index']);
+    Route::post('impor', [ImporController::class, 'jalankan']);
 });
 
 Route::middleware(['auth', 'peran:kasir'])->group(function () {

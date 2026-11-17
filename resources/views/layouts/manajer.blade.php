@@ -33,7 +33,7 @@
                 ['Stok masuk', '/stok-masuk', 'stok-masuk*'],
                 ['HPP & margin', '/hpp', 'hpp*'],
                 ['Laporan', '/laporan', 'laporan*'],
-                ['Impor CSV', '#', 'impor*'],
+                ['Impor CSV', '/impor', 'impor*'],
             ];
         @endphp
 
