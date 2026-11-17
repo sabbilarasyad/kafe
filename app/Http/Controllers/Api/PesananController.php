@@ -10,6 +10,25 @@ use Illuminate\Validation\ValidationException;
 
 class PesananController extends Controller
 {
+    // Daftar pesanan milik pelanggan yang login, terbaru di atas.
+    public function index(Request $request)
+    {
+        $daftar = Pesanan::where('user_id', $request->user()->id)
+            ->latest('id')
+            ->get();
+
+        return response()->json($daftar->map(fn ($p) => $this->ringkas($p))->values());
+    }
+
+    // Detail satu pesanan. Pesanan milik orang lain dianggap tidak ada (404).
+    public function show(Request $request, int $id)
+    {
+        $pesanan = Pesanan::where('user_id', $request->user()->id)
+            ->findOrFail($id);
+
+        return response()->json($this->bentuk($pesanan));
+    }
+
     public function store(Request $request, PesananService $layanan)
     {
         $data = $request->validate([
@@ -42,18 +61,31 @@ class PesananController extends Controller
         return response()->json($this->bentuk($pesanan), 201);
     }
 
-    // Bentuk satu pesanan untuk APK. Angkanya dibaca dari yang tersimpan, bukan dihitung ulang.
-    private function bentuk(Pesanan $pesanan): array
+    private function nomor(int $id): string
     {
-        $pesanan->load('items.menu');
+        return 'A-' . str_pad($id, 3, '0', STR_PAD_LEFT);
+    }
 
+    // Ringkasan untuk daftar. Tanpa rincian item.
+    private function ringkas(Pesanan $pesanan): array
+    {
         return [
             'id' => $pesanan->id,
-            'nomor' => 'A-' . str_pad($pesanan->id, 3, '0', STR_PAD_LEFT),
+            'nomor' => $this->nomor($pesanan->id),
             'status' => $pesanan->status,
             'nomor_meja' => $pesanan->nomor_meja,
-            'metode_bayar' => $pesanan->metode_bayar,
+            'total' => (int) $pesanan->total,
             'dibuat' => $pesanan->created_at->toIso8601String(),
+        ];
+    }
+
+    // Bentuk lengkap untuk detail dan struk. Angkanya dibaca dari yang tersimpan, bukan dihitung ulang.
+    private function bentuk(Pesanan $pesanan): array
+    {
+        $pesanan->loadMissing('items.menu');
+
+        return array_merge($this->ringkas($pesanan), [
+            'metode_bayar' => $pesanan->metode_bayar,
             'items' => $pesanan->items->map(fn ($i) => [
                 'menu' => $i->menu->nama,
                 'qty' => $i->qty,
@@ -63,8 +95,6 @@ class PesananController extends Controller
             'subtotal' => (int) $pesanan->subtotal,
             'service' => (int) $pesanan->service,
             'pajak' => (int) $pesanan->pajak,
-            'total' => (int) $pesanan->total,
-        ];
+        ]);
     }
 }
-

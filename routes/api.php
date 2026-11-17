@@ -17,5 +17,7 @@ Route::middleware(['auth:sanctum', 'peran:pelanggan'])->group(function () {
     Route::middleware('wajib.ganti')->group(function () {
         Route::get('menu', [MenuController::class, 'index']);
         Route::post('pesanan', [PesananController::class, 'store']);
+        Route::get('pesanan', [PesananController::class, 'index']);
+        Route::get('pesanan/{id}', [PesananController::class, 'show'])->whereNumber('id');
     });
 });
