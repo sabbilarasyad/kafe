@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\MenuController;
+use App\Http\Controllers\Api\PesananController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('daftar', [AuthController::class, 'daftar'])->middleware('throttle:20,1');
@@ -13,6 +15,7 @@ Route::middleware(['auth:sanctum', 'peran:pelanggan'])->group(function () {
 
     // Fitur lain: hanya boleh kalau password sementara sudah diganti.
     Route::middleware('wajib.ganti')->group(function () {
-        Route::get('ping', fn () => ['ok' => true]);   // UJI SAJA, dihapus nanti
+        Route::get('menu', [MenuController::class, 'index']);
+        Route::post('pesanan', [PesananController::class, 'store']);
     });
 });
