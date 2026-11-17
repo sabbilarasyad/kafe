@@ -9,6 +9,7 @@ class Menu extends Model
     protected $table = 'menu';
 
     protected $fillable = [
+        'kode',
         'nama',
         'kategori',
         'harga',
