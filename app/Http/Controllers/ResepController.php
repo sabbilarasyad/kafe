@@ -10,6 +10,34 @@ use Illuminate\Validation\Rule;
 
 class ResepController extends Controller
 {
+    // Semua menu, plus jumlah baris resepnya (untuk lencana "Belum ada resep").
+    private function daftar()
+    {
+        return Menu::withCount('resepItems')->orderBy('nama')->get();
+    }
+
+    private function tampil(Menu $menu)
+    {
+        return view('resep.index', [
+            'daftar' => $this->daftar(),
+            'terpilih' => $menu->load('resepItems.bahan'),
+        ]);
+    }
+
+    // Buka halaman: menu pertama langsung terpilih.
+    public function index()
+    {
+        $menu = Menu::orderBy('nama')->first();
+
+        return $menu ? $this->tampil($menu) : redirect('/menu')->with('status', 'Tambah menu dulu sebelum mengisi resep.');
+    }
+
+    // Resep satu menu.
+    public function show(Menu $menu)
+    {
+        return $this->tampil($menu);
+    }
+
     // Form tambah bahan ke resep.
     public function create(Menu $menu)
     {
@@ -37,7 +65,7 @@ class ResepController extends Controller
 
         $menu->resepItems()->create($data);
 
-        return redirect('/menu/' . $menu->id)->with('status', 'Bahan ditambahkan ke resep.');
+        return redirect('/resep/' . $menu->id)->with('status', 'Bahan ditambahkan ke resep.');
     }
 
     // Form ubah takaran (bahan tidak bisa diganti, hanya takarannya).
@@ -55,9 +83,18 @@ class ResepController extends Controller
         $data = $request->validate([
             'takaran' => ['required', 'numeric', 'gt:0'],
         ]);
-
         $resepItem->update($data);
 
-        return redirect('/menu/' . $resepItem->menu_id)->with('status', 'Takaran diperbarui.');
+        return redirect('/resep/' . $resepItem->menu_id)->with('status', 'Takaran diperbarui.');
+    }
+
+    // Hapus satu bahan dari resep. Pesanan lama aman: yang tersimpan di
+    // pesanan_bahan adalah bahan dan jumlah yang terpakai, bukan baris resep.
+    public function destroy(ResepItem $resepItem)
+    {
+        $menuId = $resepItem->menu_id;
+        $resepItem->delete();
+
+        return redirect('/resep/' . $menuId)->with('status', 'Bahan dihapus dari resep.');
     }
 }

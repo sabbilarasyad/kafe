@@ -28,10 +28,13 @@ Route::middleware(['auth', 'peran:manajer'])->group(function () {
     Route::resource('menu', MenuController::class)->except(['edit', 'destroy']);
     Route::patch('menu/{menu}/aktif', [MenuController::class, 'ubahAktif']);
 
-    Route::get('menu/{menu}/resep/create', [ResepController::class, 'create']);
-    Route::post('menu/{menu}/resep', [ResepController::class, 'store']);
-    Route::get('resep/{resepItem}/edit', [ResepController::class, 'edit']);
-    Route::put('resep/{resepItem}', [ResepController::class, 'update']);
+    Route::get('resep', [ResepController::class, 'index']);
+    Route::get('resep/{menu}', [ResepController::class, 'show']);
+    Route::get('resep/{menu}/tambah', [ResepController::class, 'create']);
+    Route::post('resep/{menu}', [ResepController::class, 'store']);
+    Route::get('resep/item/{resepItem}/edit', [ResepController::class, 'edit']);
+    Route::put('resep/item/{resepItem}', [ResepController::class, 'update']);
+    Route::delete('resep/item/{resepItem}', [ResepController::class, 'destroy']);
     Route::get('stok-masuk', [StokMasukController::class, 'index']);
     Route::post('stok-masuk', [StokMasukController::class, 'store']);
     Route::get('hpp', [HppController::class, 'index']);
