@@ -51,9 +51,6 @@ Route::middleware(['auth', 'peran:kasir'])->group(function () {
     Route::post('reset-password', [ResetPasswordController::class, 'reset']);
 });
 
-Route::resource('menu', MenuController::class)->except(['edit', 'destroy']);
-Route::patch('menu/{menu}/aktif', [MenuController::class, 'ubahAktif']);
-
 Route::get('/dashboard', function () {
     return request()->user()->role === 'kasir'
         ? redirect('/pesanan/create')
