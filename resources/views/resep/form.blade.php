@@ -1,6 +1,6 @@
 @extends('layouts.manajer')
 
-@section('judul', 'Menu & resep')
+@section('judul', 'Resep')
 
 @section('isi')
 <div class="max-w-[520px] rounded-[22px] border border-[#cdbf9f] bg-[#fffdf7] p-8 shadow-[0_3px_0_#cdbf9f]">
@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ $item->exists ? '/resep/' . $item->id : '/menu/' . $menu->id . '/resep' }}" class="mt-4">
+    <form method="POST" action="{{ $item->exists ? '/resep/item/' . $item->id : '/resep/' . $menu->id }}" class="mt-4">
         @csrf
         @if ($item->exists) @method('PUT') @endif
 
@@ -36,7 +36,8 @@
 
         <div class="mt-8 flex gap-3">
             <button type="submit" class="h-[50px] flex-1 rounded-xl bg-[#b5452f] font-bold text-[#fffdf7] hover:brightness-110">Simpan</button>
-            <a href="/menu/{{ $menu->id }}" class="flex h-[50px] items-center rounded-xl border border-[#cdbf9f] px-6 font-bold text-[#6f6a5c]">Batal</a>
+            <a href="/resep/{{ $menu->id }}"
+               class="flex h-[50px] flex-1 items-center justify-center rounded-xl border border-[#b5452f] font-bold text-[#b5452f] hover:bg-[#b5452f] hover:text-[#fffdf7]">Batal</a>
         </div>
     </form>
 </div>
