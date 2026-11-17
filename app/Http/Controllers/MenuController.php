@@ -4,51 +4,58 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MenuController extends Controller
 {
+    // Kategori yang dipakai data klien (nanti diganti master kategori dari seeder).
+    public const KATEGORI = ['Minuman', 'Makanan'];
+
     // Semua menu, plus jumlah baris resepnya (untuk lencana "Belum ada resep").
     private function daftar()
     {
         return Menu::withCount('resepItems')->orderBy('nama')->get();
     }
 
+    private function tampil(Menu $terpilih)
+    {
+        return view('menu.index', [
+            'daftar' => $this->daftar(),
+            'terpilih' => $terpilih,
+            'kategori' => self::KATEGORI,
+        ]);
+    }
+
     // Buka halaman: menu pertama langsung terpilih.
     public function index()
     {
-        $daftar = $this->daftar();
-
-        return view('menu.index', [
-            'daftar' => $daftar,
-            'terpilih' => $daftar->first() ?? new Menu(['aktif' => true]),
-        ]);
+        return $this->tampil($this->daftar()->first() ?? new Menu(['aktif' => true]));
     }
 
     // Detail satu menu.
     public function show(Menu $menu)
     {
-        return view('menu.index', ['daftar' => $this->daftar(), 'terpilih' => $menu]);
+        return $this->tampil($menu);
     }
 
     // Form menu baru (memakai halaman yang sama).
     public function create()
     {
-        return view('menu.index', [
-            'daftar' => $this->daftar(),
-            'terpilih' => new Menu(['aktif' => true]),
-        ]);
+        return $this->tampil(new Menu(['aktif' => true]));
     }
 
     public function store(Request $request)
     {
-        $menu = Menu::create($this->validasi($request));
+        $data = $this->validasi($request);
+        $data['aktif'] = true;
+        $menu = Menu::create($data);
 
         return redirect('/menu/' . $menu->id)->with('status', 'Menu ditambahkan.');
     }
 
     public function update(Request $request, Menu $menu)
     {
-        $menu->update($this->validasi($request));
+        $menu->update($this->validasi($request, $menu));
 
         return redirect('/menu/' . $menu->id)->with('status', 'Menu diperbarui.');
     }
@@ -61,11 +68,17 @@ class MenuController extends Controller
         return back();
     }
 
-    private function validasi(Request $request): array
+    private function validasi(Request $request, ?Menu $menu = null): array
     {
+        // Buang spasi di awal/akhir nama sebelum diperiksa.
+        $request->merge(['nama' => trim((string) $request->input('nama'))]);
+
         return $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'kategori' => ['required', 'string', 'max:100'],
+            'nama' => [
+                'required', 'string', 'max:100',
+                Rule::unique('menu', 'nama')->ignore($menu?->id),
+            ],
+            'kategori' => ['required', Rule::in(self::KATEGORI)],
             'harga' => ['required', 'integer', 'min:1'],
         ]);
     }
