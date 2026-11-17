@@ -18,11 +18,37 @@ class ImporDataAwal extends Command
         // Membaca dan menghitung baris CSV.
         $path = database_path('data/awal/bahan.csv');
         $handle = fopen($path, 'r');
-        $jumlah = 0;
-        while (fgetcsv($handle) !== false){
-            $jumlah++;
+
+        fgetcsv($handle);
+
+        $berhasil = 0;
+        $dilewati = [];
+        $baris = 1;
+
+        while (($kolom = fgetcsv($handle)) !== false) {
+        $baris++;
+        $nama = trim($kolom[1]);
+        $stok = trim($kolom[2]);
+        $satuan = trim($kolom[3]);
+        $harga = trim($kolom[4]);
+        if ($satuan === 'kg') {
+            $stok = $kolom[2] * 1000;
+            $harga = $kolom[4] / 1000;
+            $satuan = 'g';
+        } elseif ($satuan === 'liter') {
+            $stok = $kolom[2] * 1000;
+            $harga = $kolom[4] / 1000;
+            $satuan = 'ml';
         }
+        $this->line("$nama | $stok | $harga | $satuan");
+        $berhasil++;
+        }
+
         fclose($handle);
-        $this->info('Baris data bahan: ' . ($jumlah - 1));
+
+        $this->info("Berhasil: {$berhasil} bahan");
+        foreach ($dilewati as $item) {
+            $this->warn($item);
+        }
     }
 }
