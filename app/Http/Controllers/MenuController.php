@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 
 class MenuController extends Controller
 {
-    // Kategori yang dipakai data klien (nanti diganti master kategori dari seeder).
+    // Kategori menu sesuai data klien: Minuman dan Makanan.
     public const KATEGORI = ['Minuman', 'Makanan'];
 
     // Semua menu, plus jumlah baris resepnya (untuk lencana "Belum ada resep").
