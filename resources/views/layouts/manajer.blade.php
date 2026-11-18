@@ -32,6 +32,7 @@
                 ['Menu', '/menu', 'menu*'],
                 ['Resep', '/resep', 'resep*'],
                 ['Stok masuk', '/stok-masuk', 'stok-masuk*'],
+                ['Penyesuaian stok', '/stok-penyesuaian', 'stok-penyesuaian*'],
                 ['HPP & margin', '/hpp', 'hpp*'],
                 ['Laporan', '/laporan', 'laporan*'],
                 ['Impor CSV', '/impor', 'impor*'],

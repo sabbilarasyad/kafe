@@ -53,8 +53,6 @@
         </div>
 
         <div class="mt-6 flex gap-3">
-            <button type="button" onclick="window.print()"
-                    class="h-11 flex-1 rounded-xl border border-[#b5452f] font-bold text-[#b5452f] hover:bg-[#b5452f] hover:text-[#fffdf7]">Cetak struk</button>
             <a href="/pesanan/create"
                class="flex h-11 flex-1 items-center justify-center rounded-xl bg-[#b5452f] font-bold text-[#fffdf7] hover:brightness-110">Pesanan baru</a>
         </div>

@@ -11,6 +11,7 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ImporController;
+use App\Http\Controllers\StokPenyesuaianController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,6 +38,8 @@ Route::middleware(['auth', 'peran:manajer'])->group(function () {
     Route::delete('resep/item/{resepItem}', [ResepController::class, 'destroy']);
     Route::get('stok-masuk', [StokMasukController::class, 'index']);
     Route::post('stok-masuk', [StokMasukController::class, 'store']);
+    Route::get('stok-penyesuaian', [StokPenyesuaianController::class, 'index']);
+    Route::post('stok-penyesuaian', [StokPenyesuaianController::class, 'store']);
     Route::get('hpp', [HppController::class, 'index']);
     Route::get('laporan', [LaporanController::class, 'index']);
     Route::get('impor', [ImporController::class, 'index']);
