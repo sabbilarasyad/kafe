@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kedai Kopi Senja</string>
+    <string name="title_activity_main">Kedai Kopi Senja</string>
+    <string name="package_name">id.kedaisenja.app</string>
+    <string name="custom_url_scheme">id.kedaisenja.app</string>
+</resources>

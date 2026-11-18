@@ -1,0 +1,9 @@
+{
+  "appId": "id.kedaisenja.app",
+  "appName": "Kedai Kopi Senja",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  }
+}
