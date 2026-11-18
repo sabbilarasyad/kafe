@@ -35,6 +35,7 @@
                 ['HPP & margin', '/hpp', 'hpp*'],
                 ['Laporan', '/laporan', 'laporan*'],
                 ['Impor CSV', '/impor', 'impor*'],
+                ['Ganti password', '/ganti-password', 'ganti-password*'],
             ];
         @endphp
 

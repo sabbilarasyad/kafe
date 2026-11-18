@@ -54,6 +54,11 @@ Route::middleware(['auth', 'peran:kasir'])->group(function () {
     Route::post('reset-password', [ResetPasswordController::class, 'reset']);
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get('ganti-password', [AuthController::class, 'formGantiPassword'])->name('ganti-password');
+    Route::post('ganti-password', [AuthController::class, 'gantiPassword']);
+});
+
 Route::get('/dashboard', function () {
     return request()->user()->role === 'kasir'
         ? redirect('/pesanan/create')

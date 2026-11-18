@@ -31,6 +31,7 @@
                 ['Buat pesanan', '/pesanan/create', 'pesanan/create*'],
                 ['Daftar pesanan', '/pesanan', 'pesanan'],
                 ['Reset password pelanggan', '/reset-password', 'reset-password*'],
+                ['Ganti password', '/ganti-password', 'ganti-password*'],
             ];
         @endphp
 
