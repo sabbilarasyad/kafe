@@ -477,7 +477,6 @@ function simpanAlamat() {
   render();
 }
 
-// ---------- Render dan aksi ----------
 function render() {
   var h = '';
   switch (st.scr) {
@@ -490,8 +489,11 @@ function render() {
     case 'struk': h = scrStruk(); break;
     case 'akun': h = scrAkun(); break;
   }
+  // Navigasi dicabut dari area scroll dan ditaruh tetap di bawah.
+  h = h.replace(/<div class="nav">[\s\S]*$/, '');
+  var a = navAktif();
   var app = document.getElementById('app');
-  app.innerHTML = '<div class="scr">' + h + '</div>';
+  app.innerHTML = '<div class="scr">' + h + '</div>' + (a ? nav(a) : '');
 }
 
 async function kirimAuth(mode) {
