@@ -1,400 +1,550 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b5452f">
 <title>Kedai Kopi Senja</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bata:#b5452f;--hijau:#1f4d45;--krem:#f7f2e6;--kartu:#fffdf7;--border:#cdbf9f;--sekunder:#6f6a5c;--teks:#2b2a26}
-*{box-sizing:border-box}
-body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--krem);color:var(--teks);padding-bottom:70px}
-header{background:var(--hijau);color:#fff;padding:16px;font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:700}
-main{padding:16px}
-h2{font-family:Fraunces,Georgia,serif;margin:4px 0 12px;font-size:20px}
-.kartu{background:var(--kartu);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px}
-input,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;font-size:16px;margin:6px 0 12px;background:#fff}
-button{width:100%;padding:13px;border:0;border-radius:12px;background:var(--bata);color:#fff;font-weight:700;font-size:16px;margin-top:4px}
-button.sekunder{background:var(--hijau)}
-button.kecil{width:auto;padding:6px 12px;font-size:14px;margin:0}
-.pesan{padding:10px;border-radius:12px;margin-bottom:12px;display:none}
-.pesan.galat{background:#f8d7d1;color:#8E2A20;display:block}
-.pesan.info{background:#fdeec6;color:#8A6100;display:block}
-.baris{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0}
-.habis{color:#8E2A20;font-weight:700}
-.sekunder-teks{color:var(--sekunder);font-size:14px}
-.tautan{color:var(--bata);text-align:center;cursor:pointer;margin-top:12px;font-weight:600}
-nav{position:fixed;bottom:0;left:0;right:0;display:none;background:var(--kartu);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0px)}
-nav button{background:none;color:var(--sekunder);font-size:13px;padding:10px 0;border-radius:0;font-weight:600;margin:0}
-nav button.aktif{color:var(--bata)}
+:root{color-scheme:light;--ink:#2b2a26;--mut:#6f6a5c;--brick:#b5452f;--brick2:#c75a44;--green:#1f4d45;--green2:#163b35;--cream:#fffdf7;--paper:#f7f2e6;--line:#cdbf9f;--gold:#f2c75c;--sa:'Plus Jakarta Sans',system-ui,sans-serif;--fr:'Fraunces',Georgia,serif;box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:#e8dfc9}
+body{font-family:var(--sa);color:var(--ink);display:flex;justify-content:center}
+#app{width:100%;max-width:430px;height:100dvh;background:var(--paper);display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(43,42,38,.18)}
+.scr{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.chk{height:12px;flex:none;background:conic-gradient(var(--brick) 25%,var(--cream) 0 50%,var(--brick) 0 75%,var(--cream) 0) 0 0/24px 24px}
+.hero{background:linear-gradient(var(--green),var(--green2));color:var(--cream);text-align:center;padding:calc(48px + env(safe-area-inset-top,0px)) 20px 40px;flex:none}
+.hero.sm{padding-bottom:28px}
+.badge{width:72px;height:72px;border-radius:22px;background:#efe3c2;color:var(--brick);font:700 26px var(--fr);display:grid;place-items:center;margin:0 auto 16px;border:3px solid var(--gold)}
+.hero.sm .badge{width:56px;height:56px;border-radius:17px;font-size:22px}
+.hero h1{font:700 26px var(--fr);margin:0}.hero p{margin:6px 0 0;font-size:13px;opacity:.85}
+.card{background:var(--cream);border:1px solid var(--line);border-radius:24px;padding:20px;margin:-22px 20px 20px;position:relative;box-shadow:0 4px 0 rgba(181,69,47,.08)}
+.card.flat{margin:0 0 14px}
+label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:0 0 6px}
+.in{height:48px;border:1.5px solid var(--line);border-radius:14px;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px;margin-bottom:14px}
+.in:focus-within{border-color:var(--brick);box-shadow:0 0 0 4px rgba(181,69,47,.14)}
+.in svg{width:18px;height:18px;stroke:var(--mut);fill:none;stroke-width:1.8;flex:none}
+.in input{border:0;outline:0;background:none;flex:1;min-width:0;font:500 14px var(--sa);color:var(--ink)}
+.btn{display:grid;place-items:center;width:100%;height:52px;border:0;border-radius:15px;background:linear-gradient(var(--brick2),var(--brick));color:var(--cream);font:700 15px var(--sa);box-shadow:0 4px 0 #8c3322;cursor:pointer}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8c3322}
+.btn:disabled{opacity:.5;box-shadow:none;transform:none}
+.btn.o{background:var(--cream);color:var(--brick);border:2px solid var(--brick);box-shadow:none}
+.note{font-size:12px;color:var(--mut);text-align:center;margin:14px 0 0}.note b{color:var(--brick);cursor:pointer}
+.hint{font-size:11px;color:var(--mut);margin:-6px 0 14px;line-height:1.4}
+.warn{display:flex;gap:10px;background:#fbe9b7;border:1.5px solid var(--gold);border-radius:14px;padding:12px;margin:16px 20px 0;font-size:12px}.warn b{display:block;font-size:13px}
+.warn svg{width:20px;height:20px;stroke:#8a5a00;fill:none;stroke-width:2;flex:none}
+.bar{background:var(--brick);color:var(--cream);padding:calc(30px + env(safe-area-inset-top,0px)) 20px 16px;flex:none}
+.bar h2{font:700 24px var(--fr);margin:0}
+.pad{padding:14px 20px 20px}
+.chips{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto}
+.chip{font:700 12px var(--sa);padding:9px 16px;border-radius:99px;border:1.5px solid var(--line);background:var(--cream);color:var(--ink);white-space:nowrap}
+.chip.on{background:var(--brick);border-color:var(--brick);color:#fff}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.it{background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:8px}
+.pic{height:96px;border-radius:12px;display:grid;place-items:center;position:relative;background:linear-gradient(135deg,#fbe9b7,#f2c75c)}
+.pic.n{background:linear-gradient(135deg,#e9eee0,#c9d6b9)}
+.pic svg{width:36px;height:36px;stroke:var(--brick);fill:none;stroke-width:1.7}
+.pic em{position:absolute;left:6px;top:6px;font:700 11px var(--sa);font-style:normal;background:var(--gold);color:#6b4a00;border-radius:99px;padding:3px 9px}
+.pic em.h{background:var(--brick);color:#fff}
+.it h4{font:700 16px var(--fr);margin:10px 2px 0}.it .pr{font-weight:700;font-size:14px;color:var(--brick);margin:2px 2px 6px}
+.sk{height:6px;background:#e6dcc3;border-radius:9px;margin:0 2px 5px;overflow:hidden}.sk i{display:block;height:100%;background:var(--green)}.sk i.l{background:#e0a43a}
+.it small{display:block;font-size:12px;color:var(--mut);margin:0 2px 8px}
+.add{width:100%;height:40px;border:0;border-radius:11px;background:var(--brick);color:#fff;font:700 13px var(--sa)}.add:disabled{background:#e6dcc3;color:var(--mut)}
+.row{display:flex;align-items:center;gap:12px;background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:8px;margin-bottom:10px}
+.row .pic{width:44px;height:44px;flex:none}.row .pic svg{width:24px;height:24px}
+.row .n{flex:1;font:700 15px var(--fr)}.row .n small{display:block;font:500 12px var(--sa);color:var(--mut);margin-top:2px}
+.q{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.q button{width:30px;height:30px;border-radius:9px;border:1.5px solid var(--line);background:#fff;color:var(--brick);font:700 16px var(--sa)}
+.alert{background:var(--brick);color:#fff;border-radius:14px;padding:12px;font-size:12px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}.alert b{display:block}.alert svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;flex:none}
+.sec{font-size:12px;font-weight:700;color:var(--mut);margin:14px 0 8px}
+.tb{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.tb button,.pay button{height:36px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font:700 13px var(--sa);color:var(--ink)}
+.tb .on{background:var(--green);border-color:var(--green);color:#fff}
+.pay{display:flex;gap:10px}.pay button{flex:1;height:42px;border-radius:12px;font-size:14px}.pay .on{background:var(--brick);border-color:var(--brick);color:#fff}
+.sum{background:#efe6cf;border-radius:16px;padding:14px 16px;margin-top:14px;font-size:12px;color:var(--mut)}
+.sum p{display:flex;justify-content:space-between;margin:0 0 6px}
+.sum .tt{border-top:1.5px dashed var(--line);margin:8px 0 0;padding-top:10px;color:var(--ink);font-weight:700;font-size:14px;align-items:center}
+.sum .tt span:last-child{font:700 24px var(--fr);color:var(--brick)}
+.small-note{display:block;text-align:center;font-size:11px;color:var(--mut);margin-top:10px}
+.nav{display:flex;justify-content:space-around;background:var(--cream);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));flex:none}
+.nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font:700 11px var(--sa);color:var(--mut);padding:6px 0;width:76px;border-radius:25px}
+.nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}.nav .on{background:var(--brick);color:#fff}
+.step{display:flex;align-items:center;margin:8px 16px 6px}.step i{width:28px;height:28px;border-radius:50%;background:#e6dcc3;display:grid;place-items:center;font:700 13px var(--sa);font-style:normal;color:var(--mut);flex:none}
+.step i.d{background:var(--green);color:#fff}.step i.c{background:var(--brick);color:#fff;box-shadow:0 0 0 5px rgba(181,69,47,.18)}
+.step u{flex:1;height:4px;background:#e6dcc3}.step u.d{background:var(--green)}
+.lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin:0 0 16px}
+.stat{background:var(--green);color:var(--cream);border-radius:16px;padding:14px 16px;font:700 14px var(--sa);display:flex;gap:10px;align-items:center;margin-bottom:16px}
+.rc{background:var(--cream);border:1px solid var(--line);padding:16px 16px 22px;position:relative;margin-bottom:14px}
+.rc::after{content:"";position:absolute;left:-1px;right:-1px;bottom:-8px;height:8px;background:conic-gradient(from 135deg at 50% 0,var(--cream) 90deg,#0000 0) 0 0/16px 8px}
+.rc h5{font:700 18px var(--fr);margin:0 0 12px;text-align:center}.rc p{display:flex;justify-content:space-between;font-size:13px;margin:0 0 10px}
+.rc .tt{border-top:1.5px dashed var(--line);padding-top:12px;font-weight:700;font-size:14px;margin:0}.rc .tt span:last-child{font:700 22px var(--fr);color:var(--brick)}
+.av{width:84px;height:84px;border-radius:50%;background:#efe3c2;border:3px solid var(--gold);display:grid;place-items:center;margin:24px auto 14px}.av svg{width:36px;height:36px;stroke:var(--brick);fill:none;stroke-width:1.7}
+.acc{font:700 20px var(--fr);text-align:center}.acc+small{display:block;text-align:center;font-size:12px;color:var(--mut);margin:4px 0 20px}
+.galat-box{background:#f8d7d1;color:#8E2A20;border-radius:14px;padding:12px;font-size:13px;margin:0 20px 10px}
+.ok-box{background:#e3efe6;color:#2A6B45;border-radius:14px;padding:12px;font-size:13px;margin:0 20px 10px}
 </style>
 </head>
 <body>
 <div id="app"></div>
-<nav id="nav">
-  <button data-tab="menu">Menu</button>
-  <button data-tab="keranjang">Keranjang</button>
-  <button data-tab="pesanan">Pesanan</button>
-  <button data-tab="akun">Akun</button>
-</nav>
 
 <script>
-const KUNCI = { server: 'kks_server', token: 'kks_token', nomor: 'kks_nomor', wajib: 'kks_wajib' };
-const SERVER_BAWAAN = 'http://10.10.1.225:8000';
+var SERVER_BAWAAN = 'http://10.10.1.225:8000';
+var KUNCI = { server: 'kks_server', token: 'kks_token', nomor: 'kks_nomor', wajib: 'kks_wajib' };
 
-let mode = 'login';        // 'login' atau 'daftar'
-let tab = 'menu';          // menu | keranjang | pesanan | akun
-let lihatId = null;        // id pesanan yang sedang dibuka strukynya
-let menuCache = [];
-let keranjang = {};        // { menuId: { nama, harga, qty } }
+// Ikon dari desain (path SVG yang sama).
+var I = {
+  cup: '<path d="M5 9h11v5a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M9 3v2M12 3v2"/>',
+  tea: '<path d="M6 8h12l-1.5 12h-9z"/><path d="M12 8V3l3-1"/>',
+  cart: '<path d="M3 4h2l2.4 10.5h10L20 7H6"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/>',
+  bill: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4-6 8-6s7 1.5 8 6"/>',
+  phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+  lock: '<rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  warn: '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>'
+};
+function ic(n) { return '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">' + I[n] + '</svg>'; }
 
-function server() {
-  return (localStorage.getItem(KUNCI.server) || SERVER_BAWAAN).replace(/\/$/, '');
-}
+var st = {
+  scr: 'masuk',        // masuk | daftar | wajib | menu | keranjang | pesanan | struk | akun
+  cat: 'Semua',
+  cart: {},            // { menuId: qty }
+  meja: 1,
+  bayar: 'QRIS',
+  menu: [],
+  memuat: false,
+  pesanan: [],
+  detail: null,        // data struk yang sedang dibuka
+  stokErr: null,       // daftar bahan kurang dari server
+  pesan: null          // { html, galat }
+};
+
+// ---------- Utilitas ----------
+function server() { return (localStorage.getItem(KUNCI.server) || SERVER_BAWAAN).replace(/\/$/, ''); }
 function token() { return localStorage.getItem(KUNCI.token); }
-function sudahWajibGanti() { return localStorage.getItem(KUNCI.wajib) === '1'; }
+function wajibGanti() { return localStorage.getItem(KUNCI.wajib) === '1'; }
 function rp(n) { return 'Rp' + Number(n).toLocaleString('id-ID'); }
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function nilai(id) { var el = document.getElementById(id); return el ? el.value : ''; }
 
-// Satu pintu untuk semua panggilan API. Menangani 401, 403 wajib ganti, dan galat jaringan.
+// Satu pintu untuk semua panggilan API.
 async function api(metode, path, body) {
-  const headers = { Accept: 'application/json' };
+  var headers = { Accept: 'application/json' };
   if (body) headers['Content-Type'] = 'application/json';
   if (token()) headers['Authorization'] = 'Bearer ' + token();
 
-  let res;
+  var res;
   try {
     res = await fetch(server() + '/api/' + path, {
       method: metode,
-      headers,
+      headers: headers,
       body: body ? JSON.stringify(body) : undefined
     });
   } catch (e) {
-    throw { pesan: 'Server tidak bisa dihubungi. Periksa alamat server di menu Akun dan pastikan HP satu jaringan dengan laptop.' };
+    throw { pesan: 'Server tidak bisa dihubungi. Pastikan HP satu jaringan dengan laptop dan alamat server benar.' };
   }
 
-  let data = null;
+  var data = null;
   try { data = await res.json(); } catch (e) {}
 
   if (res.status === 401) {
-    keluar();
+    keluarSesi();
     throw { pesan: 'Sesi habis, silakan masuk lagi.' };
   }
   if (res.status === 403 && data && data.wajib_ganti_password) {
     localStorage.setItem(KUNCI.wajib, '1');
-    render();
+    st.scr = 'wajib';
     throw { pesan: data.pesan };
   }
   if (!res.ok) {
-    let pesan = 'Terjadi kesalahan.';
-    if (res.status === 404) pesan = 'Pesanan tidak ditemukan.';
-    else if (data && data.errors) pesan = Object.values(data.errors)[0][0];
+    var pesan = 'Terjadi kesalahan.';
+    if (res.status === 404) pesan = 'Data tidak ditemukan.';
+    else if (data && data.errors) pesan = Object.values(data.errors).flat()[0];
     else if (data && data.message) pesan = data.message;
-    throw { pesan, stok: data && data.errors ? data.errors.stok : null };
+    throw { pesan: pesan, stok: data && data.errors ? data.errors.stok : null };
   }
   return data;
 }
 
-function tampilPesan(id, html, galat) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.className = 'pesan ' + (galat ? 'galat' : 'info');
-  el.innerHTML = html;
-}
-
-function keluar() {
+function keluarSesi() {
   localStorage.removeItem(KUNCI.token);
   localStorage.removeItem(KUNCI.nomor);
   localStorage.removeItem(KUNCI.wajib);
-  keranjang = {};
-  lihatId = null;
-  tab = 'menu';
-  mode = 'login';
+  st.cart = {};
+  st.detail = null;
+  st.stokErr = null;
+  st.scr = 'masuk';
 }
 
-function render() {
-  const app = document.getElementById('app');
-  const nav = document.getElementById('nav');
-  const masuk = !!token();
+function kotakPesan() {
+  if (!st.pesan) return '';
+  var p = st.pesan;
+  st.pesan = null;
+  return p.galat ? '<div class="galat-box">' + p.html + '</div>' : '<div class="ok-box">' + p.html + '</div>';
+}
 
-  if (!masuk) {
-    nav.style.display = 'none';
-    return layarMasuk(app);
+function bar(judul) { return '<div class="bar"><h2>' + judul + '</h2></div><div class="chk"></div>'; }
+function hero(judul, sub) {
+  return '<div class="hero"><div class="badge">KS</div><h1>' + judul + '</h1>' + (sub ? '<p>' + sub + '</p>' : '') + '</div><div class="chk" style="margin-top:-12px"></div>';
+}
+function inp(label, icon, id, ph, type, hint) {
+  return '<label>' + label + '</label><div class="in">' + ic(icon) + '<input id="' + id + '" type="' + (type || 'text') + '" placeholder="' + ph + '"></div>' + (hint ? '<div class="hint">' + hint + '</div>' : '');
+}
+function navAktif() { return { menu: 'menu', keranjang: 'cart', pesanan: 'orders', akun: 'akun' }[st.scr]; }
+function nav(a) {
+  var n = [['menu', 'Menu', 'cup'], ['cart', 'Keranjang', 'cart'], ['orders', 'Pesanan', 'bill'], ['akun', 'Akun', 'user']];
+  var tujuan = { cart: 'keranjang', orders: 'pesanan' };
+  return '<div class="nav">' + n.map(function (x) {
+    var to = tujuan[x[0]] || x[0];
+    return '<button class="' + (x[0] === a ? 'on' : '') + '" data-act="go" data-to="' + to + '">' + ic(x[2]) + x[1] + '</button>';
+  }).join('') + '</div>';
+}
+
+// ---------- Layar masuk dan daftar ----------
+function scrMasuk() {
+  return hero('Selamat datang', 'Masuk untuk memesan') +
+    '<div class="card">' + kotakPesanDalamKartu() +
+    inp('Nomor HP', 'phone', 'nomor', '08xxxxxxxxxx', 'tel') +
+    inp('Password', 'lock', 'pw', '••••••••', 'password') +
+    '<button class="btn" data-act="login">Masuk</button>' +
+    '<p class="note">Lupa password? Minta Kasir mereset.</p>' +
+    '<p class="note">Belum punya akun? <b data-act="go" data-to="daftar">Daftar</b></p></div>';
+}
+function scrDaftar() {
+  return hero('Buat akun', 'Daftar dengan nomor HP') +
+    '<div class="card">' + kotakPesanDalamKartu() +
+    inp('Nomor HP', 'phone', 'nomor', '08xxxxxxxxxx', 'tel', 'Nomor HP harus unik, minimal 10 digit, tanpa huruf.') +
+    inp('Password (min. 8 karakter)', 'lock', 'pw', '••••••••', 'password') +
+    '<button class="btn" data-act="daftar">Daftar</button>' +
+    '<p class="note">Sudah punya akun? <b data-act="go" data-to="masuk">Masuk</b></p></div>';
+}
+// Pesan galat di dalam kartu masuk/daftar: tampil sebagai kotak merah kecil.
+function kotakPesanDalamKartu() {
+  if (!st.pesan) return '';
+  var p = st.pesan;
+  st.pesan = null;
+  return '<div class="' + (p.galat ? 'alert' : 'warn') + '" style="margin:0 0 14px"><div>' + p.html + '</div></div>';
+}
+
+// ---------- Ganti password ----------
+function scrWajib() {
+  return bar('Ganti password') +
+    '<div class="warn"><div><b>Password sementara Anda wajib diganti</b>Ganti sekarang untuk melanjutkan.</div></div>' +
+    '<div class="card" style="margin-top:20px">' + kotakPesanDalamKartu() + formGantiPw() +
+    '<button class="btn" data-act="gantipw" data-to="wajib">Simpan password</button></div>';
+}
+function formGantiPw() {
+  return inp('Password sementara', 'lock', 'pw-lama', '••••••••', 'password') +
+    inp('Password baru (min. 8)', 'lock', 'pw-baru', '••••••••', 'password') +
+    inp('Konfirmasi password baru', 'lock', 'pw-ulang', '••••••••', 'password');
+}
+async function gantiPw(dariWajib) {
+  try {
+    await api('POST', 'ganti-password', {
+      password_lama: nilai('pw-lama'),
+      password_baru: nilai('pw-baru'),
+      password_baru_confirmation: nilai('pw-ulang')
+    });
+    localStorage.setItem(KUNCI.wajib, '0');
+    st.pesan = { html: 'Password berhasil diganti.', galat: false };
+    if (dariWajib) return muatMenu();
+    render();
+  } catch (e) {
+    st.pesan = { html: esc(e.pesan), galat: true };
+    render();
   }
-  if (sudahWajibGanti()) {
-    nav.style.display = 'none';
-    return layarGantiPassword(app, true);
-  }
-
-  nav.style.display = 'flex';
-  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('aktif', b.dataset.tab === tab));
-  ({ menu: layarMenu, keranjang: layarKeranjang, pesanan: layarPesanan, akun: layarAkun })[tab](app);
-}
-
-// ---------- Masuk dan daftar ----------
-function layarMasuk(app) {
-  const judul = mode === 'login' ? 'Masuk' : 'Daftar akun';
-  app.innerHTML = `
-    <header>Kedai Kopi Senja</header>
-    <main>
-      <div class="kartu">
-        <h2>${judul}</h2>
-        <div id="pesan" class="pesan"></div>
-        <label>Nomor HP</label>
-        <input id="nomor" inputmode="numeric" placeholder="08xxxxxxxxxx">
-        <label>Password</label>
-        <input id="pw" type="password" placeholder="Minimal 8 karakter">
-        <button id="kirim">${mode === 'login' ? 'Masuk' : 'Daftar'}</button>
-        <div class="tautan" id="ganti">${mode === 'login' ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Masuk'}</div>
-      </div>
-    </main>`;
-
-  document.getElementById('ganti').onclick = () => { mode = mode === 'login' ? 'daftar' : 'login'; render(); };
-  document.getElementById('kirim').onclick = async () => {
-    const nomor = document.getElementById('nomor').value.trim();
-    const pw = document.getElementById('pw').value;
-    try {
-      const d = await api('POST', mode === 'login' ? 'login' : 'daftar', { nomor_hp: nomor, password: pw });
-      localStorage.setItem(KUNCI.token, d.token);
-      localStorage.setItem(KUNCI.nomor, nomor);
-      localStorage.setItem(KUNCI.wajib, d.wajib_ganti_password ? '1' : '0');
-      tab = 'menu';
-      render();
-    } catch (e) {
-      tampilPesan('pesan', esc(e.pesan), true);
-    }
-  };
-}
-
-// ---------- Ganti password (dipakai juga untuk wajib ganti) ----------
-function formGantiPassword() {
-  return `
-    <div id="pesan" class="pesan"></div>
-    <label>Password lama</label>
-    <input id="pw-lama" type="password">
-    <label>Password baru</label>
-    <input id="pw-baru" type="password" placeholder="Minimal 8 karakter">
-    <label>Ulangi password baru</label>
-    <input id="pw-ulang" type="password">
-    <button id="simpan-pw">Simpan password</button>`;
-}
-
-function pasangGantiPassword(saatBerhasil) {
-  document.getElementById('simpan-pw').onclick = async () => {
-    try {
-      await api('POST', 'ganti-password', {
-        password_lama: document.getElementById('pw-lama').value,
-        password_baru: document.getElementById('pw-baru').value,
-        password_baru_confirmation: document.getElementById('pw-ulang').value
-      });
-      localStorage.setItem(KUNCI.wajib, '0');
-      tampilPesan('pesan', 'Password berhasil diganti.', false);
-      setTimeout(saatBerhasil, 800);
-    } catch (e) {
-      tampilPesan('pesan', esc(e.pesan), true);
-    }
-  };
-}
-
-function layarGantiPassword(app, wajib) {
-  app.innerHTML = `
-    <header>${wajib ? 'Ganti password' : 'Ganti password'}</header>
-    <main>
-      <div class="kartu">
-        ${wajib ? '<h2>Password sementara Anda harus diganti</h2><p class="sekunder-teks">Ganti sekarang untuk melanjutkan.</p>' : ''}
-        ${formGantiPassword()}
-      </div>
-    </main>`;
-  pasangGantiPassword(() => { tab = 'akun'; render(); });
 }
 
 // ---------- Menu ----------
-async function layarMenu(app) {
-  app.innerHTML = `<header>Menu</header><main><div id="pesan" class="pesan"></div><div id="daftar">Memuat...</div></main>`;
+async function muatMenu() {
+  st.scr = 'menu';
+  st.memuat = true;
+  render();
   try {
-    menuCache = await api('GET', 'menu');
-    const daftar = document.getElementById('daftar');
-    daftar.innerHTML = menuCache.map(m => `
-      <div class="kartu">
-        <div class="baris">
-          <div>
-            <b>${esc(m.nama)}</b>
-            <div class="sekunder-teks">${esc(m.kategori)} · sisa ${m.sisa_porsi} porsi</div>
-          </div>
-          <div style="text-align:right">
-            <div><b>${rp(m.harga)}</b></div>
-            ${m.habis
-              ? '<div class="habis">Habis</div>'
-              : `<button class="kecil" data-tambah="${m.id}">+ Tambah</button>`}
-          </div>
-        </div>
-      </div>`).join('') || '<div class="kartu">Belum ada menu.</div>';
-
-    daftar.querySelectorAll('[data-tambah]').forEach(b => {
-      b.onclick = () => {
-        const m = menuCache.find(x => x.id === +b.dataset.tambah);
-        if (!keranjang[m.id]) keranjang[m.id] = { nama: m.nama, harga: m.harga, qty: 0 };
-        keranjang[m.id].qty++;
-        tampilPesan('pesan', esc(m.nama) + ' ditambahkan ke keranjang.', false);
-      };
-    });
+    st.menu = await api('GET', 'menu');
   } catch (e) {
-    tampilPesan('pesan', esc(e.pesan), true);
+    if (st.scr === 'menu') st.pesan = { html: esc(e.pesan), galat: true };
   }
+  st.memuat = false;
+  render();
+}
+function scrMenu() {
+  var cats = ['Semua', 'Minuman', 'Makanan'];
+  var daftar = st.menu.filter(function (m) { return st.cat === 'Semua' || m.kategori === st.cat; });
+  var isi = daftar.map(kartuMenu).join('');
+  if (!isi) isi = '<div class="card flat" style="grid-column:1/-1">' + (st.memuat ? 'Memuat menu...' : 'Belum ada menu.') + '</div>';
+  return bar('Menu') +
+    '<div class="pad">' + kotakPesan() +
+    '<div class="chips">' + cats.map(function (c) {
+      return '<button class="chip ' + (st.cat === c ? 'on' : '') + '" data-act="kategori" data-id="' + c + '">' + c + '</button>';
+    }).join('') + '</div>' +
+    '<div class="g2">' + isi + '</div></div>' + nav('menu');
+}
+function kartuMenu(m) {
+  var habis = m.habis;
+  var sisa = m.sisa_porsi;
+  var lebar = habis ? 0 : Math.min(100, sisa * 5);
+  var label = m.kategori === 'Makanan' ? 'tea' : 'cup';
+  var tanda = habis ? '<em class="h">Habis</em>' : (sisa <= 5 ? '<em>Sisa ' + sisa + '</em>' : '');
+  return '<div class="it"><div class="pic ' + (m.kategori === 'Makanan' ? 'n' : '') + '">' + ic(label) + tanda + '</div>' +
+    '<h4>' + esc(m.nama) + '</h4><div class="pr">' + rp(m.harga) + '</div>' +
+    '<div class="sk"><i class="' + (sisa <= 5 ? 'l' : '') + '" style="width:' + lebar + '%"></i></div>' +
+    '<small>Sisa ' + sisa + ' porsi</small>' +
+    '<button class="add" data-act="tambah" data-id="' + m.id + '" ' + (habis ? 'disabled' : '') + '>' + (habis ? 'Habis' : '+ Tambah') + '</button></div>';
 }
 
 // ---------- Keranjang ----------
-function layarKeranjang(app) {
-  const daftar = Object.entries(keranjang).filter(([, i]) => i.qty > 0);
-  if (!daftar.length) {
-    app.innerHTML = `<header>Keranjang</header><main><div class="kartu">Keranjang masih kosong.</div></main>`;
-    return;
+function scrKeranjang() {
+  var baris = Object.keys(st.cart).filter(function (id) { return st.cart[id] > 0; }).map(function (id) {
+    return { m: st.menu.find(function (x) { return String(x.id) === id; }), q: st.cart[id] };
+  }).filter(function (x) { return x.m; });
+
+  if (!baris.length) {
+    return bar('Keranjang') + '<div class="pad">' + kotakPesan() +
+      '<div class="card flat">Keranjang masih kosong. Pilih menu dulu.</div></div>' + nav('keranjang');
   }
-  const subtotal = daftar.reduce((s, [, i]) => s + i.harga * i.qty, 0);
 
-  app.innerHTML = `
-    <header>Keranjang</header>
-    <main>
-      <div id="pesan" class="pesan"></div>
-      ${daftar.map(([id, i]) => `
-        <div class="kartu">
-          <div class="baris">
-            <div><b>${esc(i.nama)}</b><div class="sekunder-teks">${rp(i.harga)}</div></div>
-            <div>
-              <button class="kecil sekunder" data-kurang="${id}">−</button>
-              <b style="margin:0 8px">${i.qty}</b>
-              <button class="kecil" data-tambah="${id}">+</button>
-            </div>
-          </div>
-        </div>`).join('')}
-      <div class="kartu">
-        <label>Nomor meja</label>
-        <select id="meja">${Array.from({ length: 10 }, (_, k) => `<option value="${k + 1}">Meja ${k + 1}</option>`).join('')}</select>
-        <label>Metode bayar</label>
-        <select id="bayar"><option>Tunai</option><option>QRIS</option></select>
-        <div class="baris"><b>Subtotal</b><b>${rp(subtotal)}</b></div>
-        <p class="sekunder-teks">Service 5% dan pajak 10% dihitung server saat pesanan dibuat.</p>
-        <button id="kirim-pesanan">Pesan sekarang</button>
-      </div>
-    </main>`;
+  var sub = baris.reduce(function (s, x) { return s + x.m.harga * x.q; }, 0);
+  var sv = Math.round(sub * 0.05);
+  var px = Math.round((sub + sv) * 0.10);
+  var tot = sub + sv + px;
 
-  app.querySelectorAll('[data-tambah]').forEach(b => b.onclick = () => { keranjang[b.dataset.tambah].qty++; render(); });
-  app.querySelectorAll('[data-kurang]').forEach(b => b.onclick = () => { keranjang[b.dataset.kurang].qty--; render(); });
+  var alertStok = '';
+  if (st.stokErr) {
+    alertStok = '<div class="alert">' + ic('warn') + '<div><b>Stok tidak cukup untuk jumlah ini. Kurangi jumlah pesanan.</b>' +
+      '<ul style="margin:6px 0 0;padding-left:18px">' + st.stokErr.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul></div></div>';
+  }
 
-  document.getElementById('kirim-pesanan').onclick = async () => {
-    const body = {
-      nomor_meja: +document.getElementById('meja').value,
-      metode_bayar: document.getElementById('bayar').value,
-      items: daftar.map(([id, i]) => ({ menu_id: +id, qty: i.qty }))
-    };
-    try {
-      const p = await api('POST', 'pesanan', body);
-      keranjang = {};
-      lihatId = p.id;
-      tab = 'pesanan';
-      render();
-    } catch (e) {
-      // Stok kurang: kalimat umum dari desain, plus rincian bahan dari server.
-      let html = esc(e.pesan);
-      if (e.stok) {
-        html = 'Stok tidak cukup untuk jumlah ini. Kurangi jumlah pesanan.<ul>' +
-          e.stok.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul>';
-      }
-      tampilPesan('pesan', html, true);
+  var daftarBaris = baris.map(function (x) {
+    return '<div class="row"><div class="pic ' + (x.m.kategori === 'Makanan' ? 'n' : '') + '">' + ic(x.m.kategori === 'Makanan' ? 'tea' : 'cup') + '</div>' +
+      '<div class="n">' + esc(x.m.nama) + '<small>' + rp(x.m.harga) + ' / porsi</small></div>' +
+      '<div class="q"><button data-act="kurang" data-id="' + x.m.id + '">−</button>' + x.q +
+      '<button data-act="tambah" data-id="' + x.m.id + '">+</button></div></div>';
+  }).join('');
+
+  var meja = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) {
+    return '<button class="' + (st.meja === n ? 'on' : '') + '" data-act="meja" data-id="' + n + '">' + n + '</button>';
+  }).join('');
+
+  var bayar = ['Tunai', 'QRIS'].map(function (p) {
+    return '<button class="' + (st.bayar === p ? 'on' : '') + '" data-act="bayar" data-id="' + p + '">' + p + '</button>';
+  }).join('');
+
+  return bar('Keranjang') + '<div class="pad">' + kotakPesan() + alertStok + daftarBaris +
+    '<div class="sec">Nomor meja (1–10)</div><div class="tb">' + meja + '</div>' +
+    '<div class="sec">Metode bayar</div><div class="pay">' + bayar + '</div>' +
+    '<div class="sum"><p><span>Subtotal</span><span>' + rp(sub) + '</span></p>' +
+    '<p><span>Service 5%</span><span>' + rp(sv) + '</span></p>' +
+    '<p><span>Pajak 10%</span><span>' + rp(px) + '</span></p>' +
+    '<p class="tt"><span>Total</span><span>' + rp(tot) + '</span></p></div>' +
+    '<div style="margin-top:14px"><button class="btn" data-act="pesan">Pesan sekarang</button>' +
+    '<span class="small-note">Stok dipotong saat pesanan dibuat. Angka final dihitung server.</span></div>' +
+    '</div>' + nav('keranjang');
+}
+
+function tambahKeranjang(id) {
+  var m = st.menu.find(function (x) { return String(x.id) === String(id); });
+  if (!m || m.habis) return;
+  st.cart[id] = (st.cart[id] || 0) + 1;
+  st.stokErr = null;
+  render();
+}
+function kurangKeranjang(id) {
+  st.cart[id] = (st.cart[id] || 0) - 1;
+  if (st.cart[id] <= 0) delete st.cart[id];
+  st.stokErr = null;
+  render();
+}
+
+async function pesan() {
+  var items = Object.keys(st.cart).filter(function (id) { return st.cart[id] > 0; })
+    .map(function (id) { return { menu_id: +id, qty: st.cart[id] }; });
+  if (!items.length) return;
+  try {
+    var p = await api('POST', 'pesanan', { nomor_meja: st.meja, metode_bayar: st.bayar, items: items });
+    st.cart = {};
+    st.stokErr = null;
+    return muatStruk(p.id);
+  } catch (e) {
+    if (e.stok) {
+      st.stokErr = e.stok;
+      st.pesan = null;
+    } else {
+      st.pesan = { html: esc(e.pesan), galat: true };
     }
-  };
+    render();
+  }
 }
 
 // ---------- Pesanan dan struk ----------
-async function layarPesanan(app) {
-  if (lihatId) return layarStruk(app, lihatId);
-
-  app.innerHTML = `<header>Pesanan saya</header><main><div id="pesan" class="pesan"></div><div id="daftar">Memuat...</div></main>`;
+async function muatPesanan() {
+  st.scr = 'pesanan';
+  st.detail = null;
+  render();
   try {
-    const list = await api('GET', 'pesanan');
-    const daftar = document.getElementById('daftar');
-    daftar.innerHTML = list.map(p => `
-      <div class="kartu" data-buka="${p.id}" style="cursor:pointer">
-        <div class="baris"><b>${esc(p.nomor)}</b><span>${esc(p.status)}</span></div>
-        <div class="sekunder-teks">Meja ${p.nomor_meja} · ${rp(p.total)}</div>
-      </div>`).join('') || '<div class="kartu">Belum ada pesanan.</div>';
-    daftar.querySelectorAll('[data-buka]').forEach(el => el.onclick = () => { lihatId = +el.dataset.buka; render(); });
+    st.pesanan = await api('GET', 'pesanan');
   } catch (e) {
-    tampilPesan('pesan', esc(e.pesan), true);
+    st.pesan = { html: esc(e.pesan), galat: true };
   }
+  render();
+}
+function scrPesanan() {
+  var daftar = st.pesanan.map(function (p) {
+    return '<div class="row" data-act="buka" data-id="' + p.id + '" style="cursor:pointer">' +
+      '<div class="pic">' + ic('bill') + '</div>' +
+      '<div class="n">' + esc(p.nomor) + '<small>Meja ' + p.nomor_meja + ' · ' + esc(p.status) + '</small></div>' +
+      '<div style="font-weight:700;color:var(--brick)">' + rp(p.total) + '</div></div>';
+  }).join('');
+  return bar('Pesanan saya') + '<div class="pad">' + kotakPesan() +
+    (daftar || '<div class="card flat">Belum ada pesanan.</div>') + '</div>' + nav('pesanan');
 }
 
-async function layarStruk(app, id) {
-  app.innerHTML = `<header>Struk</header><main><button class="sekunder" id="kembali">← Kembali</button><div id="pesan" class="pesan"></div><div id="struk"></div></main>`;
-  document.getElementById('kembali').onclick = () => { lihatId = null; render(); };
+async function muatStruk(id) {
+  st.scr = 'struk';
+  st.detail = null;
+  render();
   try {
-    const p = await api('GET', 'pesanan/' + id);
-    document.getElementById('struk').innerHTML = `
-      <div class="kartu">
-        <h2>${esc(p.nomor)}</h2>
-        <div class="sekunder-teks">Status: <b>${esc(p.status)}</b> · Meja ${p.nomor_meja} · ${esc(p.metode_bayar)}</div>
-        <div class="sekunder-teks">${new Date(p.dibuat).toLocaleString('id-ID')}</div>
-        <hr>
-        ${p.items.map(i => `<div class="baris"><span>${i.qty}x ${esc(i.menu)}</span><span>${rp(i.subtotal)}</span></div>`).join('')}
-        <hr>
-        <div class="baris"><span>Subtotal</span><span>${rp(p.subtotal)}</span></div>
-        <div class="baris"><span>Service 5%</span><span>${rp(p.service)}</span></div>
-        <div class="baris"><span>Pajak 10%</span><span>${rp(p.pajak)}</span></div>
-        <div class="baris"><b>Total</b><b>${rp(p.total)}</b></div>
-      </div>`;
+    st.detail = await api('GET', 'pesanan/' + id);
   } catch (e) {
-    tampilPesan('pesan', esc(e.pesan), true);
+    st.pesan = { html: esc(e.pesan), galat: true };
   }
+  render();
+}
+function scrStruk() {
+  var p = st.detail;
+  var kembali = '<div class="pad" style="padding-bottom:0"><button class="chip" data-act="go" data-to="pesanan">← Kembali</button></div>';
+  if (!p) {
+    return bar('Struk') + kembali + '<div class="pad">' + kotakPesan() + '<p class="note">Memuat struk...</p></div>';
+  }
+
+  var urutan = ['Baru', 'Diproses', 'Selesai'];
+  var idx = urutan.indexOf(p.status);
+  var langkah = '';
+  if (idx >= 0) {
+    urutan.forEach(function (s, i) {
+      langkah += '<i class="' + (i < idx ? 'd' : (i === idx ? 'c' : '')) + '">' + (i < idx ? '✓' : (i + 1)) + '</i>';
+      if (i < urutan.length - 1) langkah += '<u class="' + (i < idx ? 'd' : '') + '"></u>';
+    });
+  }
+
+  var baris = p.items.map(function (i) {
+    return '<p><span>' + i.qty + 'x ' + esc(i.menu) + '</span><span>' + rp(i.subtotal) + '</span></p>';
+  }).join('');
+
+  return bar('Status pesanan') + kembali + '<div class="pad">' + kotakPesan() +
+    (idx >= 0
+      ? '<div class="step">' + langkah + '</div><div class="lab"><span>Baru</span><span>Diproses</span><span>Selesai</span></div>'
+      : '<div class="stat">' + ic('warn') + 'Pesanan ' + esc(p.status) + '</div>') +
+    '<div class="rc"><h5>' + esc(p.nomor) + '</h5>' +
+    '<p><span>Meja</span><span>' + p.nomor_meja + '</span></p>' +
+    '<p><span>Metode bayar</span><span>' + esc(p.metode_bayar) + '</span></p>' +
+    '<p><span>Waktu</span><span>' + new Date(p.dibuat).toLocaleString('id-ID') + '</span></p>' +
+    baris +
+    '<p><span>Subtotal</span><span>' + rp(p.subtotal) + '</span></p>' +
+    '<p><span>Service 5%</span><span>' + rp(p.service) + '</span></p>' +
+    '<p><span>Pajak 10%</span><span>' + rp(p.pajak) + '</span></p>' +
+    '<p class="tt"><span>Total</span><span>' + rp(p.total) + '</span></p></div>' +
+    '</div>';
 }
 
 // ---------- Akun ----------
-function layarAkun(app) {
-  app.innerHTML = `
-    <header>Akun</header>
-    <main>
-      <div class="kartu">
-        <b>${esc(localStorage.getItem(KUNCI.nomor))}</b>
-        <div class="sekunder-teks">Pelanggan</div>
-      </div>
-      <div class="kartu">
-        <h2>Ganti password</h2>
-        ${formGantiPassword()}
-      </div>
-      <div class="kartu">
-        <h2>Alamat server</h2>
-        <input id="alamat" value="${esc(server())}">
-        <button class="sekunder" id="simpan-alamat">Simpan alamat</button>
-        <p class="sekunder-teks">Isi alamat laptop, misalnya ${SERVER_BAWAAN}</p>
-        <div id="pesan-alamat"></div>
-      </div>
-      <button id="keluar" class="sekunder">Keluar</button>
-    </main>`;
-
-  pasangGantiPassword(() => { document.getElementById('pw-lama').value = ''; });
-
-  document.getElementById('simpan-alamat').onclick = () => {
-    const v = document.getElementById('alamat').value.trim();
-    if (!/^https?:\/\//.test(v)) {
-      document.getElementById('pesan-alamat').innerHTML = '<div class="pesan galat">Alamat harus diawali http:// atau https://</div>';
-      return;
-    }
+async function keluarAkun() {
+  try { await api('POST', 'logout'); } catch (e) {}
+  keluarSesi();
+  render();
+}
+function scrAkun() {
+  return bar('Akun') + '<div class="pad">' + kotakPesan() +
+    '<div class="av">' + ic('user') + '</div>' +
+    '<div class="acc">' + esc(localStorage.getItem(KUNCI.nomor) || '') + '</div><small>Pelanggan</small>' +
+    '<div class="card flat"><label style="font:700 16px var(--fr);color:var(--ink);margin-bottom:12px">Ganti password</label>' +
+    formGantiPw() +
+    '<button class="btn" data-act="gantipw" data-to="akun">Simpan password</button></div>' +
+    '<button class="btn o" data-act="keluar">Keluar</button>' +
+    '<div class="card flat" style="margin-top:14px"><label>Alamat server (pengaturan teknis)</label>' +
+    '<div class="in"><input id="alamat" value="' + esc(server()) + '"></div>' +
+    '<button class="btn o" data-act="simpanalamat">Simpan alamat</button></div>' +
+    '</div>' + nav('akun');
+}
+function simpanAlamat() {
+  var v = nilai('alamat').trim();
+  if (!/^https?:\/\//.test(v)) {
+    st.pesan = { html: 'Alamat harus diawali http:// atau https://', galat: true };
+  } else {
     localStorage.setItem(KUNCI.server, v);
-    document.getElementById('pesan-alamat').innerHTML = '<div class="pesan info">Alamat disimpan.</div>';
-  };
-
-  document.getElementById('keluar').onclick = async () => {
-    try { await api('POST', 'logout'); } catch (e) {}
-    keluar();
-    render();
-  };
+    st.pesan = { html: 'Alamat server disimpan.', galat: false };
+  }
+  render();
 }
 
-// ---------- Navigasi ----------
-document.querySelectorAll('nav button').forEach(b => {
-  b.onclick = () => { tab = b.dataset.tab; lihatId = null; render(); };
+// ---------- Render dan aksi ----------
+function render() {
+  var h = '';
+  switch (st.scr) {
+    case 'masuk': h = scrMasuk(); break;
+    case 'daftar': h = scrDaftar(); break;
+    case 'wajib': h = scrWajib(); break;
+    case 'menu': h = scrMenu(); break;
+    case 'keranjang': h = scrKeranjang(); break;
+    case 'pesanan': h = scrPesanan(); break;
+    case 'struk': h = scrStruk(); break;
+    case 'akun': h = scrAkun(); break;
+  }
+  var app = document.getElementById('app');
+  app.innerHTML = '<div class="scr">' + h + '</div>';
+}
+
+async function kirimAuth(mode) {
+  var nomor = nilai('nomor').trim();
+  var pw = nilai('pw');
+  try {
+    var d = await api('POST', mode === 'login' ? 'login' : 'daftar', { nomor_hp: nomor, password: pw });
+    localStorage.setItem(KUNCI.token, d.token);
+    localStorage.setItem(KUNCI.nomor, nomor);
+    localStorage.setItem(KUNCI.wajib, d.wajib_ganti_password ? '1' : '0');
+    if (d.wajib_ganti_password) { st.scr = 'wajib'; render(); }
+    else { return muatMenu(); }
+  } catch (e) {
+    st.pesan = { html: esc(e.pesan), galat: true };
+    render();
+  }
+}
+
+function go(tujuan) {
+  st.pesan = null;
+  st.stokErr = null;
+  if (tujuan === 'menu') return muatMenu();
+  if (tujuan === 'pesanan') return muatPesanan();
+  st.scr = tujuan;
+  render();
+}
+
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  var a = el.dataset.act, id = el.dataset.id, to = el.dataset.to;
+  if (a === 'go') return go(to);
+  if (a === 'kategori') { st.cat = id; return render(); }
+  if (a === 'tambah') return tambahKeranjang(id);
+  if (a === 'kurang') return kurangKeranjang(id);
+  if (a === 'meja') { st.meja = +id; return render(); }
+  if (a === 'bayar') { st.bayar = id; return render(); }
+  if (a === 'pesan') return pesan();
+  if (a === 'buka') return muatStruk(+id);
+  if (a === 'login') return kirimAuth('login');
+  if (a === 'daftar') return kirimAuth('daftar');
+  if (a === 'gantipw') return gantiPw(to === 'wajib');
+  if (a === 'keluar') return keluarAkun();
+  if (a === 'simpanalamat') return simpanAlamat();
 });
-render();
+
+// Pilih layar awal sesuai sesi yang tersimpan.
+if (token()) {
+  if (wajibGanti()) { st.scr = 'wajib'; render(); }
+  else muatMenu();
+} else {
+  render();
+}
 </script>
 </body>
 </html>
