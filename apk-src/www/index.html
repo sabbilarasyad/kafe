@@ -75,6 +75,7 @@ label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:0 0 6
 .step u{flex:1;height:4px;background:#e6dcc3}.step u.d{background:var(--green)}
 .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin:0 0 16px}
 .stat{background:var(--green);color:var(--cream);border-radius:16px;padding:14px 16px;font:700 14px var(--sa);display:flex;gap:10px;align-items:center;margin-bottom:16px}
+.stat svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.8;flex:none}
 .rc{background:var(--cream);border:1px solid var(--line);padding:16px 16px 22px;position:relative;margin-bottom:14px}
 .rc::after{content:"";position:absolute;left:-1px;right:-1px;bottom:-8px;height:8px;background:conic-gradient(from 135deg at 50% 0,var(--cream) 90deg,#0000 0) 0 0/16px 8px}
 .rc h5{font:700 18px var(--fr);margin:0 0 12px;text-align:center}.rc p{display:flex;justify-content:space-between;font-size:13px;margin:0 0 10px}
@@ -89,7 +90,7 @@ label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:0 0 6
 <div id="app"></div>
 
 <script>
-var SERVER_BAWAAN = 'http://10.10.1.225:8000';
+var SERVER_BAWAAN = 'http://192.168.110.127:8000';
 var KUNCI = { server: 'kks_server', token: 'kks_token', nomor: 'kks_nomor', wajib: 'kks_wajib' };
 
 // Ikon dari desain (path SVG yang sama).
