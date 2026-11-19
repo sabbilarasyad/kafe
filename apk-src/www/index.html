@@ -15,9 +15,7 @@ body{font-family:var(--sa);color:var(--ink);display:flex;justify-content:center}
 .scr{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 .chk{height:12px;flex:none;background:conic-gradient(var(--brick) 25%,var(--cream) 0 50%,var(--brick) 0 75%,var(--cream) 0) 0 0/24px 24px}
 .hero{background:linear-gradient(var(--green),var(--green2));color:var(--cream);text-align:center;padding:calc(48px + env(safe-area-inset-top,0px)) 20px 40px;flex:none}
-.hero.sm{padding-bottom:28px}
 .badge{width:72px;height:72px;border-radius:22px;background:#efe3c2;color:var(--brick);font:700 26px var(--fr);display:grid;place-items:center;margin:0 auto 16px;border:3px solid var(--gold)}
-.hero.sm .badge{width:56px;height:56px;border-radius:17px;font-size:22px}
 .hero h1{font:700 26px var(--fr);margin:0}.hero p{margin:6px 0 0;font-size:13px;opacity:.85}
 .card{background:var(--cream);border:1px solid var(--line);border-radius:24px;padding:20px;margin:-22px 20px 20px;position:relative;box-shadow:0 4px 0 rgba(181,69,47,.08)}
 .card.flat{margin:0 0 14px}
@@ -51,6 +49,9 @@ label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:0 0 6
 .sk{height:6px;background:#e6dcc3;border-radius:9px;margin:0 2px 5px;overflow:hidden}.sk i{display:block;height:100%;background:var(--green)}.sk i.l{background:#e0a43a}
 .it small{display:block;font-size:12px;color:var(--mut);margin:0 2px 8px}
 .add{width:100%;height:40px;border:0;border-radius:11px;background:var(--brick);color:#fff;font:700 13px var(--sa)}.add:disabled{background:#e6dcc3;color:var(--mut)}
+.duo{display:flex;gap:6px}
+.duo .add{height:36px;font-size:12px;padding:0 4px}
+.duo .add.o{background:var(--cream);color:var(--brick);border:2px solid var(--brick)}
 .row{display:flex;align-items:center;gap:12px;background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:8px;margin-bottom:10px}
 .row .pic{width:44px;height:44px;flex:none}.row .pic svg{width:24px;height:24px}
 .row .n{flex:1;font:700 15px var(--fr)}.row .n small{display:block;font:500 12px var(--sa);color:var(--mut);margin-top:2px}
@@ -75,7 +76,7 @@ label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:0 0 6
 .step u{flex:1;height:4px;background:#e6dcc3}.step u.d{background:var(--green)}
 .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin:0 0 16px}
 .stat{background:var(--green);color:var(--cream);border-radius:16px;padding:14px 16px;font:700 14px var(--sa);display:flex;gap:10px;align-items:center;margin-bottom:16px}
-.stat svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.8;flex:none}
+.stat svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.8}
 .rc{background:var(--cream);border:1px solid var(--line);padding:16px 16px 22px;position:relative;margin-bottom:14px}
 .rc::after{content:"";position:absolute;left:-1px;right:-1px;bottom:-8px;height:8px;background:conic-gradient(from 135deg at 50% 0,var(--cream) 90deg,#0000 0) 0 0/16px 8px}
 .rc h5{font:700 18px var(--fr);margin:0 0 12px;text-align:center}.rc p{display:flex;justify-content:space-between;font-size:13px;margin:0 0 10px}
@@ -84,6 +85,7 @@ label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:0 0 6
 .acc{font:700 20px var(--fr);text-align:center}.acc+small{display:block;text-align:center;font-size:12px;color:var(--mut);margin:4px 0 20px}
 .galat-box{background:#f8d7d1;color:#8E2A20;border-radius:14px;padding:12px;font-size:13px;margin:0 20px 10px}
 .ok-box{background:#e3efe6;color:#2A6B45;border-radius:14px;padding:12px;font-size:13px;margin:0 20px 10px}
+.tag-l{font-size:12px;color:var(--brick);font-weight:700}
 </style>
 </head>
 <body>
@@ -92,8 +94,8 @@ label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:0 0 6
 <script>
 var SERVER_BAWAAN = 'http://192.168.110.127:8000';
 var KUNCI = { server: 'kks_server', token: 'kks_token', nomor: 'kks_nomor', wajib: 'kks_wajib' };
+var TAMBAHAN_LARGE = 5000;
 
-// Ikon dari desain (path SVG yang sama).
 var I = {
   cup: '<path d="M5 9h11v5a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M9 3v2M12 3v2"/>',
   tea: '<path d="M6 8h12l-1.5 12h-9z"/><path d="M12 8V3l3-1"/>',
@@ -107,17 +109,17 @@ var I = {
 function ic(n) { return '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">' + I[n] + '</svg>'; }
 
 var st = {
-  scr: 'masuk',        // masuk | daftar | wajib | menu | keranjang | pesanan | struk | akun
+  scr: 'masuk',
   cat: 'Semua',
-  cart: {},            // { menuId: qty }
+  cart: {},            // kunci "idMenu|ukuran" -> qty
   meja: 1,
   bayar: 'QRIS',
   menu: [],
   memuat: false,
   pesanan: [],
-  detail: null,        // data struk yang sedang dibuka
-  stokErr: null,       // daftar bahan kurang dari server
-  pesan: null          // { html, galat }
+  detail: null,
+  stokErr: null,
+  pesan: null
 };
 
 // ---------- Utilitas ----------
@@ -127,6 +129,7 @@ function wajibGanti() { return localStorage.getItem(KUNCI.wajib) === '1'; }
 function rp(n) { return 'Rp' + Number(n).toLocaleString('id-ID'); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 function nilai(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+function hargaSatuan(m, ukuran) { return m.harga + (ukuran === 'Large' ? TAMBAHAN_LARGE : 0); }
 
 // Satu pintu untuk semua panggilan API.
 async function api(metode, path, body) {
@@ -183,6 +186,12 @@ function kotakPesan() {
   st.pesan = null;
   return p.galat ? '<div class="galat-box">' + p.html + '</div>' : '<div class="ok-box">' + p.html + '</div>';
 }
+function kotakPesanDalamKartu() {
+  if (!st.pesan) return '';
+  var p = st.pesan;
+  st.pesan = null;
+  return '<div class="' + (p.galat ? 'alert' : 'warn') + '" style="margin:0 0 14px"><div>' + p.html + '</div></div>';
+}
 
 function bar(judul) { return '<div class="bar"><h2>' + judul + '</h2></div><div class="chk"></div>'; }
 function hero(judul, sub) {
@@ -201,7 +210,7 @@ function nav(a) {
   }).join('') + '</div>';
 }
 
-// ---------- Layar masuk dan daftar ----------
+// ---------- Masuk dan daftar ----------
 function scrMasuk() {
   return hero('Selamat datang', 'Masuk untuk memesan') +
     '<div class="card">' + kotakPesanDalamKartu() +
@@ -218,13 +227,6 @@ function scrDaftar() {
     inp('Password (min. 8 karakter)', 'lock', 'pw', '••••••••', 'password') +
     '<button class="btn" data-act="daftar">Daftar</button>' +
     '<p class="note">Sudah punya akun? <b data-act="go" data-to="masuk">Masuk</b></p></div>';
-}
-// Pesan galat di dalam kartu masuk/daftar: tampil sebagai kotak merah kecil.
-function kotakPesanDalamKartu() {
-  if (!st.pesan) return '';
-  var p = st.pesan;
-  st.pesan = null;
-  return '<div class="' + (p.galat ? 'alert' : 'warn') + '" style="margin:0 0 14px"><div>' + p.html + '</div></div>';
 }
 
 // ---------- Ganti password ----------
@@ -287,25 +289,41 @@ function kartuMenu(m) {
   var lebar = habis ? 0 : Math.min(100, sisa * 5);
   var label = m.kategori === 'Makanan' ? 'tea' : 'cup';
   var tanda = habis ? '<em class="h">Habis</em>' : (sisa <= 5 ? '<em>Sisa ' + sisa + '</em>' : '');
+
+  var tombol;
+  if (habis) {
+    tombol = '<button class="add" disabled>Habis</button>';
+  } else if (m.kategori === 'Minuman') {
+    tombol = '<div class="duo">' +
+      '<button class="add" data-act="tambah" data-id="' + m.id + '" data-ukuran="Reguler">+ Reguler</button>' +
+      '<button class="add o" data-act="tambah" data-id="' + m.id + '" data-ukuran="Large">+ Large</button></div>';
+  } else {
+    tombol = '<button class="add" data-act="tambah" data-id="' + m.id + '" data-ukuran="Reguler">+ Tambah</button>';
+  }
+
   return '<div class="it"><div class="pic ' + (m.kategori === 'Makanan' ? 'n' : '') + '">' + ic(label) + tanda + '</div>' +
     '<h4>' + esc(m.nama) + '</h4><div class="pr">' + rp(m.harga) + '</div>' +
     '<div class="sk"><i class="' + (sisa <= 5 ? 'l' : '') + '" style="width:' + lebar + '%"></i></div>' +
-    '<small>Sisa ' + sisa + ' porsi</small>' +
-    '<button class="add" data-act="tambah" data-id="' + m.id + '" ' + (habis ? 'disabled' : '') + '>' + (habis ? 'Habis' : '+ Tambah') + '</button></div>';
+    '<small>Sisa ' + sisa + ' porsi</small>' + tombol + '</div>';
 }
 
 // ---------- Keranjang ----------
-function scrKeranjang() {
-  var baris = Object.keys(st.cart).filter(function (id) { return st.cart[id] > 0; }).map(function (id) {
-    return { m: st.menu.find(function (x) { return String(x.id) === id; }), q: st.cart[id] };
+function barisKeranjang() {
+  return Object.keys(st.cart).filter(function (k) { return st.cart[k] > 0; }).map(function (k) {
+    var bagian = k.split('|');
+    return { k: k, m: st.menu.find(function (x) { return String(x.id) === bagian[0]; }), u: bagian[1], q: st.cart[k] };
   }).filter(function (x) { return x.m; });
+}
+
+function scrKeranjang() {
+  var baris = barisKeranjang();
 
   if (!baris.length) {
     return bar('Keranjang') + '<div class="pad">' + kotakPesan() +
       '<div class="card flat">Keranjang masih kosong. Pilih menu dulu.</div></div>' + nav('keranjang');
   }
 
-  var sub = baris.reduce(function (s, x) { return s + x.m.harga * x.q; }, 0);
+  var sub = baris.reduce(function (s, x) { return s + hargaSatuan(x.m, x.u) * x.q; }, 0);
   var sv = Math.round(sub * 0.05);
   var px = Math.round((sub + sv) * 0.10);
   var tot = sub + sv + px;
@@ -317,10 +335,11 @@ function scrKeranjang() {
   }
 
   var daftarBaris = baris.map(function (x) {
+    var tandaL = x.u === 'Large' ? ' <span class="tag-l">(Large)</span>' : '';
     return '<div class="row"><div class="pic ' + (x.m.kategori === 'Makanan' ? 'n' : '') + '">' + ic(x.m.kategori === 'Makanan' ? 'tea' : 'cup') + '</div>' +
-      '<div class="n">' + esc(x.m.nama) + '<small>' + rp(x.m.harga) + ' / porsi</small></div>' +
-      '<div class="q"><button data-act="kurang" data-id="' + x.m.id + '">−</button>' + x.q +
-      '<button data-act="tambah" data-id="' + x.m.id + '">+</button></div></div>';
+      '<div class="n">' + esc(x.m.nama) + tandaL + '<small>' + rp(hargaSatuan(x.m, x.u)) + ' / porsi</small></div>' +
+      '<div class="q"><button data-act="kurang" data-id="' + esc(x.k) + '">−</button>' + x.q +
+      '<button data-act="plus" data-id="' + esc(x.k) + '">+</button></div></div>';
   }).join('');
 
   var meja = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) {
@@ -343,23 +362,30 @@ function scrKeranjang() {
     '</div>' + nav('keranjang');
 }
 
-function tambahKeranjang(id) {
+function tambahKeranjang(id, ukuran) {
   var m = st.menu.find(function (x) { return String(x.id) === String(id); });
   if (!m || m.habis) return;
-  st.cart[id] = (st.cart[id] || 0) + 1;
+  var k = id + '|' + (ukuran || 'Reguler');
+  st.cart[k] = (st.cart[k] || 0) + 1;
   st.stokErr = null;
   render();
 }
-function kurangKeranjang(id) {
-  st.cart[id] = (st.cart[id] || 0) - 1;
-  if (st.cart[id] <= 0) delete st.cart[id];
+function plusKeranjang(k) {
+  st.cart[k] = (st.cart[k] || 0) + 1;
+  st.stokErr = null;
+  render();
+}
+function kurangKeranjang(k) {
+  st.cart[k] = (st.cart[k] || 0) - 1;
+  if (st.cart[k] <= 0) delete st.cart[k];
   st.stokErr = null;
   render();
 }
 
 async function pesan() {
-  var items = Object.keys(st.cart).filter(function (id) { return st.cart[id] > 0; })
-    .map(function (id) { return { menu_id: +id, qty: st.cart[id] }; });
+  var items = barisKeranjang().map(function (x) {
+    return { menu_id: +x.k.split('|')[0], qty: x.q, ukuran: x.u };
+  });
   if (!items.length) return;
   try {
     var p = await api('POST', 'pesanan', { nomor_meja: st.meja, metode_bayar: st.bayar, items: items });
@@ -429,7 +455,8 @@ function scrStruk() {
   }
 
   var baris = p.items.map(function (i) {
-    return '<p><span>' + i.qty + 'x ' + esc(i.menu) + '</span><span>' + rp(i.subtotal) + '</span></p>';
+    var tandaL = i.ukuran === 'Large' ? ' <span class="tag-l">(Large)</span>' : '';
+    return '<p><span>' + i.qty + 'x ' + esc(i.menu) + tandaL + '</span><span>' + rp(i.subtotal) + '</span></p>';
   }).join('');
 
   return bar('Status pesanan') + kembali + '<div class="pad">' + kotakPesan() +
@@ -478,6 +505,7 @@ function simpanAlamat() {
   render();
 }
 
+// ---------- Render dan aksi ----------
 function render() {
   var h = '';
   switch (st.scr) {
@@ -528,7 +556,8 @@ document.addEventListener('click', function (e) {
   var a = el.dataset.act, id = el.dataset.id, to = el.dataset.to;
   if (a === 'go') return go(to);
   if (a === 'kategori') { st.cat = id; return render(); }
-  if (a === 'tambah') return tambahKeranjang(id);
+  if (a === 'tambah') return tambahKeranjang(id, el.dataset.ukuran);
+  if (a === 'plus') return plusKeranjang(id);
   if (a === 'kurang') return kurangKeranjang(id);
   if (a === 'meja') { st.meja = +id; return render(); }
   if (a === 'bayar') { st.bayar = id; return render(); }
