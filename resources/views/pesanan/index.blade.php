@@ -120,7 +120,7 @@
                         <button class="h-11 w-full rounded-xl bg-[#b5452f] font-bold text-[#fffdf7] hover:brightness-110">Tandai selesai</button>
                     </form>
                 @endif
-                <a href="/pesanan/{{ $terpilih->id }}/struk" class="flex h-11 items-center justify-center rounded-xl bg-[#f0e3c3] font-bold text-[#b5452f]">Cetak struk</a>
+                <a href="/pesanan/{{ $terpilih->id }}/struk" class="flex h-11 items-center justify-center rounded-xl bg-[#f0e3c3] font-bold text-[#b5452f]">Rincian pesanan</a>
             </div>
         </aside>
     @endif
