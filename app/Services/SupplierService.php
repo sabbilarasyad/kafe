@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Http;
 
 class SupplierService
 {
+    // Tugas: Mengambil harga bahan terbaru dari layanan Supplier.
+    // Kenapa: Kode atau nama dan satuan dicocokkan agar harga tidak masuk ke bahan yang keliru.
+    // Contoh: Harga untuk bahan berkode BHN-001 diperbarui jika satuannya cocok.
     public function sinkronHarga(): bool
     {
         try {

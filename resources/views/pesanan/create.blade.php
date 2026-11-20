@@ -4,8 +4,8 @@
 
 @section('isi')
 @php
-    // Data menu untuk JavaScript: id => nama dan harga.
-    $dataMenu = $menu->mapWithKeys(fn ($m) => [$m->id => ['nama' => $m->nama, 'harga' => $m->harga]]);
+    // Data menu untuk JavaScript: id => nama, harga, kategori.
+    $dataMenu = $menu->mapWithKeys(fn ($m) => [$m->id => ['nama' => $m->nama, 'harga' => $m->harga, 'kategori' => $m->kategori]]);
 @endphp
 
 <div class="flex items-start gap-6">
@@ -14,11 +14,10 @@
     <div class="min-w-0 flex-1">
         <h2 class="mb-3 text-[28px] font-bold">Menu</h2>
 
-        <div id="chips" class="mb-4 flex flex-wrap gap-2">
-            <button type="button" data-kat="" class="rounded-full border border-[#cdbf9f] bg-[#fffdf7] px-5 py-2 text-sm font-bold"
-                    style="background:#b5452f;color:#fffdf7">Semua {{ $menu->count() }}</button>
+        <div class="mb-4 flex flex-wrap gap-2">
+            <button type="button" data-kat="" class="kat-chip rounded-full border border-[#cdbf9f] px-5 py-2 text-sm font-bold" style="background:#b5452f;color:#fffdf7">Semua {{ $menu->count() }}</button>
             @foreach ($menu->groupBy('kategori') as $kat => $isi)
-                <button type="button" data-kat="{{ $kat }}" class="rounded-full border border-[#cdbf9f] bg-[#fffdf7] px-5 py-2 text-sm font-bold">{{ $kat }} {{ $isi->count() }}</button>
+                <button type="button" data-kat="{{ $kat }}" class="kat-chip rounded-full border border-[#cdbf9f] bg-[#fffdf7] px-5 py-2 text-sm font-bold">{{ $kat }} {{ $isi->count() }}</button>
             @endforeach
         </div>
 
@@ -48,9 +47,18 @@
                         </div>
                         <p class="mt-1 text-sm text-[#6f6a5c]">{{ $tanpaResep ? 'Belum ada resep' : 'Sisa ' . $sisa . ' porsi' }}</p>
 
-                        @if ($sisa > 0)
-                            <button type="button" onclick="tambah({{ $m->id }})"
-                                    class="mt-1 w-full rounded-full bg-[#b5452f] py-[2px] text-sm font-bold text-[#fffdf7] hover:brightness-110">+ Tambah</button>
+                                                @if ($sisa > 0)
+                            @if ($m->kategori === 'Minuman')
+                                <div class="mt-1 flex gap-1">
+                                    <button type="button" onclick="tambah({{ $m->id }}, 'Reguler')"
+                                            class="flex-1 rounded-full bg-[#b5452f] py-[2px] text-sm font-bold text-[#fffdf7] hover:brightness-110">+ Reguler</button>
+                                    <button type="button" onclick="tambah({{ $m->id }}, 'Large')"
+                                            class="flex-1 rounded-full border-2 border-[#b5452f] py-[2px] text-sm font-bold text-[#b5452f] hover:bg-[#fdeee9]">+ Large</button>
+                                </div>
+                            @else
+                                <button type="button" onclick="tambah({{ $m->id }}, 'Reguler')"
+                                        class="mt-1 w-full rounded-full bg-[#b5452f] py-[2px] text-sm font-bold text-[#fffdf7] hover:brightness-110">+ Tambah</button>
+                            @endif
                         @else
                             <p class="mt-1 rounded-full bg-[#e6dcc0] py-[2px] text-center text-sm font-bold text-[#6f6a5c]">Tidak tersedia</p>
                         @endif
@@ -73,7 +81,7 @@
         <div id="input-item"></div>
 
         @if ($errors->any())
-            <div class="mt-3 rounded-xl border border-[#e8907f] bg-[#f9d5cc] px-4 py-2 text-sm font-bold text-[#8E2A20]">
+            <div class="mt-3 rounded-xl border border-[#b5452f] bg-[#fdeee9] px-4 py-3 text-sm text-[#8E2A20]">
                 @foreach ($errors->all() as $e) <p>{{ $e }}</p> @endforeach
             </div>
         @endif
@@ -110,16 +118,24 @@
 
 <script>
     const MENU = @json($dataMenu);
-    const keranjang = {};   // { id_menu: jumlah }
+    // Kunci keranjang: "id|ukuran", contoh "3|Reguler" atau "3|Large".
+    const keranjang = {};
+    let kategoriAktif = '';
 
-    function tambah(id) {
-        keranjang[id] = (keranjang[id] || 0) + 1;
+    // Hanya Minuman yang punya pilihan Large.
+    function bisaLarge(id) {
+        return MENU[id].kategori === 'Minuman';
+    }
+
+    function tambah(id, ukuran = 'Reguler') {
+        const kunci = id + '|' + ukuran;
+        keranjang[kunci] = (keranjang[kunci] || 0) + 1;
         gambar();
     }
 
-    function ubah(id, selisih) {
-        keranjang[id] += selisih;
-        if (keranjang[id] <= 0) delete keranjang[id];
+    function ubah(kunci, selisih) {
+        keranjang[kunci] += selisih;
+        if (keranjang[kunci] <= 0) delete keranjang[kunci];
         gambar();
     }
 
@@ -131,12 +147,9 @@
         return String(teks).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // BAGIANMU: hitung service dan pajak dari subtotal (aturan di bawah).
-    function hitungBiaya(subtotal) {
-        return {
-            service: Math.round(subtotal * 0.05),
-            pajak: Math.round(subtotal * 0.10)
-        };
+    // Harga satu porsi sesuai ukuran (Large = harga + 5.000). Server tetap yang menghitung angka final.
+    function hargaSatu(id, ukuran) {
+        return MENU[id].harga + (ukuran === 'Large' ? 5000 : 0);
     }
 
     function gambar() {
@@ -147,62 +160,64 @@
 
         let subtotal = 0, jumlahItem = 0, urut = 0;
 
-        for (const id in keranjang) {
-            const qty = keranjang[id];
+        for (const kunci in keranjang) {
+            const [id, ukuran] = kunci.split('|');
+            const qty = keranjang[kunci];
             const m = MENU[id];
-            subtotal += m.harga * qty;
+            subtotal += hargaSatu(id, ukuran) * qty;
             jumlahItem += qty;
 
             daftar.insertAdjacentHTML('beforeend', `
                 <div class="flex items-center justify-between border-b border-[#e6dcc0] py-3">
                     <div>
-                        <p class="font-bold">${esc(m.nama)}</p>
-                        <p class="text-sm text-[#6f6a5c]">${rupiah(m.harga)} / porsi</p>
+                        <p class="font-bold">${esc(m.nama)} ${ukuran === 'Large' ? '<span class="text-xs text-[#b5452f]">(Large)</span>' : ''}</p>
+                        <p class="text-sm text-[#6f6a5c]">${rupiah(hargaSatu(id, ukuran))} / porsi</p>
                     </div>
-                    <div class="flex items-center gap-3 rounded-xl border border-[#cdbf9f] px-2 py-1 font-bold">
-                        <button type="button" onclick="ubah(${id}, -1)" class="px-1 text-[#b5452f]">−</button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="ubah('${kunci}', -1)" class="px-1 text-[#b5452f]">−</button>
                         <span>${qty}</span>
-                        <button type="button" onclick="ubah(${id}, 1)" class="px-1 text-[#b5452f]">+</button>
+                        <button type="button" onclick="ubah('${kunci}', 1)" class="px-1 text-[#b5452f]">+</button>
                     </div>
                 </div>`);
 
+            // Kirim sebagai field tersembunyi untuk server.
             input.insertAdjacentHTML('beforeend',
                 `<input type="hidden" name="items[${urut}][menu_id]" value="${id}">` +
-                `<input type="hidden" name="items[${urut}][qty]" value="${qty}">`);
+                `<input type="hidden" name="items[${urut}][qty]" value="${qty}">` +
+                `<input type="hidden" name="items[${urut}][ukuran]" value="${ukuran}">`);
             urut++;
         }
 
-        const biaya = hitungBiaya(subtotal);
+        const sv = Math.round(subtotal * 0.05);
+        const px = Math.round((subtotal + sv) * 0.10);
 
         document.getElementById('jumlah-item').textContent = jumlahItem + ' item';
         document.getElementById('t-subtotal').textContent = rupiah(subtotal);
-        document.getElementById('t-service').textContent = rupiah(biaya.service);
-        document.getElementById('t-pajak').textContent = rupiah(biaya.pajak);
-        document.getElementById('t-total').textContent = rupiah(subtotal + biaya.service + biaya.pajak);
+        document.getElementById('t-service').textContent = rupiah(sv);
+        document.getElementById('t-pajak').textContent = rupiah(px);
+        document.getElementById('t-total').textContent = rupiah(subtotal + sv + px);
         document.getElementById('tombol').disabled = jumlahItem === 0;
+
+        if (jumlahItem === 0) {
+            daftar.innerHTML = '<p class="py-6 text-center text-sm text-[#6f6a5c]">Belum ada item. Pilih menu di kiri.</p>';
+        }
     }
 
     // Filter kategori.
-    document.querySelectorAll('#chips button').forEach(tombol => {
-        tombol.addEventListener('click', () => {
-            const kat = tombol.dataset.kat;
-
-            document.querySelectorAll('[data-kartu]').forEach(kartu => {
-                kartu.classList.toggle('hidden', kat !== '' && kartu.dataset.kartu !== kat);
+    document.querySelectorAll('.kat-chip').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const kat = btn.dataset.kat;
+            document.querySelectorAll('[data-kartu]').forEach(function (kartu) {
+                kartu.style.display = (kat === '' || kartu.dataset.kartu === kat) ? '' : 'none';
             });
-
-            document.querySelectorAll('#chips button').forEach(x => {
-                x.style.background = '';
-                x.style.color = '';
+            document.querySelectorAll('.kat-chip').forEach(function (b) {
+                const aktif = b.dataset.kat === kat;
+                b.style.background = aktif ? '#b5452f' : '#fffdf7';
+                b.style.color = aktif ? '#fffdf7' : '';
             });
-            tombol.style.background = '#b5452f';
-            tombol.style.color = '#fffdf7';
         });
     });
 
-    // Kalau server menolak pesanan, isi keranjang dipulihkan.
-    const lama = @json(old('items', []));
-    Object.values(lama).forEach(i => { keranjang[i.menu_id] = Number(i.qty); });
     gambar();
 </script>
 @endsection

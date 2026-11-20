@@ -11,6 +11,9 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     // Pelanggan mendaftar sendiri dengan nomor HP dan password.
+    // Tugas: Membuat akun pelanggan dan mengembalikan token untuk APK.
+    // Kenapa: Password disimpan dalam bentuk hash agar teks aslinya tidak disimpan.
+    // Contoh: Nomor 081234567890 yang valid dapat didaftarkan dengan password 8 karakter.
     public function daftar(Request $request)
     {
         $data = $request->validate([
@@ -36,6 +39,9 @@ class AuthController extends Controller
     }
 
     // Login dengan nomor HP. Hanya akun pelanggan.
+    // Tugas: Memeriksa kredensial pelanggan dan membuat token masuk.
+    // Kenapa: Pesan gagal dibuat sama agar tidak membocorkan apakah nomor terdaftar.
+    // Contoh: Nomor dan password yang cocok menghasilkan token.
     public function login(Request $request)
     {
         $data = $request->validate([
@@ -57,6 +63,9 @@ class AuthController extends Controller
     }
 
     // Ganti password (juga dipakai untuk mengganti password sementara).
+    // Tugas: Mengganti password pelanggan setelah password lama terbukti benar.
+    // Kenapa: Konfirmasi password baru membantu mencegah salah ketik saat mengganti.
+    // Contoh: Password baru minimal 8 karakter dan harus cocok dengan konfirmasinya.
     public function gantiPassword(Request $request)
     {
         $request->validate([
@@ -74,6 +83,9 @@ class AuthController extends Controller
     }
 
     // Logout: hapus token yang sedang dipakai.
+    // Tugas: Menghapus token APK yang sedang digunakan untuk masuk.
+    // Kenapa: Token yang dihapus tidak lagi dapat dipakai untuk mengakses API.
+    // Contoh: Token aktif akun A dihapus saat akun A keluar.
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

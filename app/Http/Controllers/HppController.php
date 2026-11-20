@@ -8,6 +8,9 @@ use App\Services\SupplierService;
 
 class HppController extends Controller
 {
+    // Tugas: Menyiapkan data harga pokok produksi dan margin untuk halaman laporan.
+    // Kenapa: Menu yang datanya belum lengkap dilewati agar angka laporan tidak menyesatkan.
+    // Contoh: Harga jual Rp30.000 dan HPP Rp12.000 memberi margin Rp18.000.
     public function index(SupplierService $supplier)
     {
         // Coba ambil harga terbaru. false = Supplier gagal, harga lama dipakai.

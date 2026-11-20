@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WajibGantiPassword
 {
+    // Tugas: Menghentikan permintaan pelanggan yang masih wajib mengganti password.
+    // Kenapa: Pemeriksaan server tetap berlaku meskipun aplikasi mencoba melewati layar ganti password.
+    // Contoh: Nilai wajib_ganti_password true menghasilkan respons 403.
     public function handle(Request $request, Closure $next): Response
     {
         // Pelanggan yang password-nya baru direset Kasir wajib menggantinya dulu.

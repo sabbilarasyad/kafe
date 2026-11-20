@@ -31,7 +31,7 @@
 
         @foreach ($pesanan->items as $item)
             <div class="flex justify-between py-1 font-bold">
-                <span>{{ $item->qty }}× {{ $item->menu->nama }}</span>
+                <span>{{ $item->qty }}× {{ $item->menu->nama }}@if ($item->ukuran === 'Large') <span class="text-xs text-[#b5452f]">(Large)</span>@endif</span>
                 {{-- Harga satuan yang tersimpan saat pesanan dibuat, bukan harga menu sekarang. --}}
                 <span>Rp{{ number_format($item->harga_satuan * $item->qty, 0, ',', '.') }}</span>
             </div>

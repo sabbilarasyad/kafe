@@ -8,7 +8,7 @@ class PesananItem extends Model
 {
     protected $table = 'pesanan_item';
 
-    protected $fillable = ['pesanan_id', 'menu_id', 'qty', 'harga_satuan'];
+    protected $fillable = ['pesanan_id', 'menu_id', 'qty', 'ukuran', 'harga_satuan'];
 
     public function pesanan()
     {

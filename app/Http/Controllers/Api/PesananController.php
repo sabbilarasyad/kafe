@@ -11,6 +11,9 @@ use Illuminate\Validation\ValidationException;
 class PesananController extends Controller
 {
     // Daftar pesanan milik pelanggan yang login, terbaru di atas.
+    // Tugas: Mengirim daftar pesanan milik pelanggan sebagai JSON.
+    // Kenapa: Penyaringan berdasarkan akun mencegah daftar mencampur pesanan pelanggan lain.
+    // Contoh: Akun dengan 2 pesanan menerima 2 ringkasan.
     public function index(Request $request)
     {
         $daftar = Pesanan::where('user_id', $request->user()->id)
@@ -21,6 +24,9 @@ class PesananController extends Controller
     }
 
     // Detail satu pesanan. Pesanan milik orang lain dianggap tidak ada (404).
+    // Tugas: Mengirim rincian pesanan yang dipilih pelanggan.
+    // Kenapa: Pencarian memakai id akun agar pelanggan hanya dapat melihat miliknya.
+    // Contoh: ID 12 hanya tampil jika pesanan itu milik akun yang sedang masuk.
     public function show(Request $request, int $id)
     {
         $pesanan = Pesanan::where('user_id', $request->user()->id)
@@ -29,6 +35,9 @@ class PesananController extends Controller
         return response()->json($this->bentuk($pesanan));
     }
 
+    // Tugas: Memvalidasi lalu membuat pesanan pelanggan melalui API.
+    // Kenapa: Layanan bersama memastikan pemeriksaan stok dan hitungan sama dengan Kasir.
+    // Contoh: Nomor meja 3 diterima, sedangkan nomor meja 11 ditolak.
     public function store(Request $request, PesananService $layanan)
     {
         $data = $request->validate([
@@ -37,6 +46,7 @@ class PesananController extends Controller
             'items' => ['required', 'array', 'min:1'],
             'items.*.menu_id' => ['required', 'integer', 'exists:menu,id'],
             'items.*.qty' => ['required', 'integer', 'min:1'],
+            'items.*.ukuran' => ['nullable', 'in:Reguler,Large'],
         ]);
 
         // Satu pelanggan hanya boleh punya satu pesanan berstatus Baru.
@@ -88,6 +98,7 @@ class PesananController extends Controller
             'metode_bayar' => $pesanan->metode_bayar,
             'items' => $pesanan->items->map(fn ($i) => [
                 'menu' => $i->menu->nama,
+                'ukuran' => $i->ukuran,
                 'qty' => $i->qty,
                 'harga_satuan' => (int) $i->harga_satuan,
                 'subtotal' => (int) $i->harga_satuan * $i->qty,

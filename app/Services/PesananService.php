@@ -13,9 +13,25 @@ use Illuminate\Validation\ValidationException;
 
 class PesananService
 {
+    // Tambahan harga untuk ukuran Large (opsional O1).
+    public const TAMBAHAN_LARGE = 5000;
+
+    // Pengali takaran untuk ukuran Large (bahan g dan ml saja).
+    public const PENGALI_LARGE = 1.5;
+
     // Membuat pesanan. Aturannya sama untuk Kasir (web) dan Pelanggan (APK).
+    // $items: [['menu_id' => 1, 'qty' => 2, 'ukuran' => 'Reguler'], ...]. Ukuran boleh kosong (dianggap Reguler).
+    // Tugas: Membuat pesanan, menghitung tagihan, dan memotong bahan.
+    // Kenapa: Semua langkah dilakukan bersama agar pesanan tidak tersimpan setengah jalan.
+    // Contoh: 2 kopi membutuhkan 40 g kopi, lalu stok dikurangi 40 g.
     public function buat(User $pembuat, array $items, string $metodeBayar, ?int $nomorMeja = null): Pesanan
     {
+        // Pastikan setiap item punya ukuran yang valid.
+        $items = array_map(function ($item) {
+            $item['ukuran'] = $item['ukuran'] ?? 'Reguler';
+            return $item;
+        }, $items);
+
         // Ambil semua menu yang dipesan, kuncinya id menu.
         $menus = Menu::with('resepItems.bahan')
             ->whereIn('id', collect($items)->pluck('menu_id'))
@@ -25,7 +41,10 @@ class PesananService
         // Menu nonaktif atau tanpa resep ditolak.
         $this->tolakBilaTidakBisaDipesan($items, $menus);
 
-        // Total kebutuhan tiap bahan dari SEMUA item.
+        // Large hanya untuk Minuman.
+        $this->tolakUkuranTidakValid($items, $menus);
+
+        // Total kebutuhan tiap bahan dari SEMUA item (sudah memperhitungkan ukuran).
         $kebutuhan = $this->gabungKebutuhan($items, $menus);
 
         // Cek stok, simpan pesanan, dan potong stok dalam SATU transaksi.
@@ -38,10 +57,10 @@ class PesananService
                 throw ValidationException::withMessages(['stok' => $kekurangan]);
             }
 
-            // Subtotal dari harga menu saat ini, dihitung di server.
+            // Subtotal dari harga menu saat ini (+ tambahan Large), dihitung di server.
             $subtotal = 0;
             foreach ($items as $item) {
-                $subtotal += $menus[$item['menu_id']]->harga * $item['qty'];
+                $subtotal += $this->hargaSatuan($item, $menus) * $item['qty'];
             }
 
             $biaya = $this->hitungBiaya($subtotal);
@@ -63,7 +82,8 @@ class PesananService
                     'pesanan_id' => $pesanan->id,
                     'menu_id' => $item['menu_id'],
                     'qty' => $item['qty'],
-                    'harga_satuan' => $menus[$item['menu_id']]->harga,
+                    'ukuran' => $item['ukuran'],
+                    'harga_satuan' => $this->hargaSatuan($item, $menus),
                 ]);
             }
 
@@ -82,7 +102,21 @@ class PesananService
         });
     }
 
+    // Harga satu porsi sesuai ukuran. Reguler = harga menu, Large = harga menu + tambahan.
+    // Tugas: Menentukan harga satu item sesuai ukuran yang dipesan.
+    // Kenapa: Harga dihitung dari data menu di server, bukan dari kiriman aplikasi.
+    // Contoh: Harga Rp20.000 ditambah Rp5.000 untuk ukuran Large.
+    private function hargaSatuan(array $item, $menus): int
+    {
+        $harga = (int) $menus[$item['menu_id']]->harga;
+
+        return $item['ukuran'] === 'Large' ? $harga + self::TAMBAHAN_LARGE : $harga;
+    }
+
     // Service 5% dari subtotal, pajak 10% dari (subtotal + service).
+    // Tugas: Menghitung biaya layanan dan pajak dari subtotal.
+    // Kenapa: Pajak dihitung setelah biaya layanan agar dasar hitungnya konsisten.
+    // Contoh: Subtotal Rp100.000 menghasilkan layanan Rp5.000 dan pajak Rp10.500.
     private function hitungBiaya(int $subtotal): array
     {
         $service = round($subtotal * 0.05);
@@ -105,7 +139,31 @@ class PesananService
         }
     }
 
+    // Ukuran hanya Reguler atau Large, dan Large hanya untuk kategori Minuman.
+    private function tolakUkuranTidakValid(array $items, $menus): void
+    {
+        foreach ($items as $item) {
+            $menu = $menus[$item['menu_id']];
+
+            if (! in_array($item['ukuran'], ['Reguler', 'Large'], true)) {
+                throw ValidationException::withMessages([
+                    'items' => 'Ukuran ' . $item['ukuran'] . ' tidak dikenal.',
+                ]);
+            }
+
+            if ($item['ukuran'] === 'Large' && $menu->kategori !== 'Minuman') {
+                throw ValidationException::withMessages([
+                    'items' => $menu->nama . ' tidak tersedia dalam ukuran Large.',
+                ]);
+            }
+        }
+    }
+
     // Total kebutuhan tiap bahan dari seluruh item (kunci: id bahan).
+    // Untuk Large, takaran g dan ml dikali 1,5; takaran pcs tidak berubah.
+    // Tugas: Menjumlahkan kebutuhan bahan dari semua item pesanan.
+    // Kenapa: Stok diperiksa untuk jumlah gabungan agar bahan tidak terhitung terpisah.
+    // Contoh: Dua menu yang masing-masing perlu 20 g memakai total 40 g.
     private function gabungKebutuhan(array $items, $menus): array
     {
         $kebutuhan = [];
@@ -114,7 +172,13 @@ class PesananService
             $menu = $menus[$item['menu_id']];
 
             foreach ($menu->resepItems as $resep) {
-                $jumlah = (float) $resep->takaran * (int) $item['qty'];
+                $takaran = (float) $resep->takaran;
+
+                if ($item['ukuran'] === 'Large' && in_array($resep->bahan->satuan, ['g', 'ml'], true)) {
+                    $takaran *= self::PENGALI_LARGE;
+                }
+
+                $jumlah = $takaran * (int) $item['qty'];
                 $kebutuhan[$resep->bahan_id] = ($kebutuhan[$resep->bahan_id] ?? 0) + $jumlah;
             }
         }
@@ -123,6 +187,9 @@ class PesananService
     }
 
     // Daftar pesan untuk bahan yang stoknya tidak cukup (kosong = semua cukup).
+    // Tugas: Menemukan bahan yang jumlah stoknya kurang dari kebutuhan.
+    // Kenapa: Pesanan ditolak sebelum stok berubah bila satu bahan saja tidak cukup.
+    // Contoh: Perlu 30 g dengan stok 20 g menghasilkan pesan kekurangan.
     private function cariKekurangan(array $kebutuhan): array
     {
         $pesan = [];
