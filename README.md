@@ -18,6 +18,9 @@ bila layanan tidak terjangkau, harga terakhir yang tersimpan dipakai beserta tan
 Aturan pesanan hanya ditulis di satu tempat (`PesananService`), dipakai oleh web Kasir dan API Pelanggan, sehingga
 aturan keduanya selalu sama.
 
+Rancangan awal (use case, class diagram, activity diagram, skenario, wireframe) sudah diselaraskan dengan sistem yang
+jadi di `docs/perancangan.md`; semua perbedaan dan alasannya dicatat di bagian 2 dokumen itu.
+
 ## 2. Teknologi
 
 | Bagian | Teknologi | Alasan singkat |
@@ -56,7 +59,7 @@ Composer, Node.js 22.
    - `DB_CONNECTION=sqlite`
    - `APP_TIMEZONE=Asia/Jakarta`
    - `SUPPLIER_URL=https://ukksmkn1katapang.next-it.co.id/kafe`
-   - `SUPPLIER_API_KEY=` lVWMc6V2SXhkeXjRMioax61WUuRhy2VW
+   - `SUPPLIER_API_KEY=` isi dengan API key dari panitia (file `.env` tidak di-commit)
 
 4. Buat file database kosong, lalu jalankan migrasi:
 
@@ -111,8 +114,7 @@ Catatan:
    New-NetFirewallRule -DisplayName "Kafe 8000" -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow
    ```
 
-5. Di aplikasi, atur **Alamat server** menjadi `http://IP-LAPTOP:8000` [ISI: tulis letaknya, mis. layar Masuk atau tab Akun,
-   sesuai aplikasi terakhir]. Alamat bawaan `http://192.168.110.127:8000` hanya berlaku di jaringan tempat pengembangan.
+5. Di aplikasi, atur **Alamat server** menjadi `http://IP-LAPTOP:8000` (tab **Akun**, setelah masuk). Alamat bawaan `http://192.168.110.127:8000` hanya berlaku di jaringan tempat pengembangan.
    APK yang memanggil `localhost` tidak bisa menghubungi server dari HP.
 
 Sumber APK ada di `apk-src` (proyek Capacitor; tampilan di `apk-src/www/index.html`). Membangun ulang (opsional,
@@ -154,7 +156,9 @@ HP, lalu menekan reset; pelanggan wajib menggantinya saat login berikutnya.
 | Layanan Supplier | `app/Services/SupplierService.php` |
 | Penyesuaian stok (O3) | `app/Http/Controllers/StokPenyesuaianController.php` |
 | API | `routes/api.php`, `app/Http/Controllers/Api` |
-| ERD dan UML | `docs/erd.md`, `docs/uml.md` |
+| ERD | `docs/erd.md` (gambar: `docs/erd.png`) |
+| UML class diagram | `docs/uml.md` (gambar: `docs/uml-class.png`) |
+| Perancangan (use case, skenario, activity, urutan, hak akses, endpoint) | `docs/perancangan.md` (gambar: `docs/usecase.png`) |
 | APK dan sumbernya | `apk/kedai-kopi-senja.apk`, `apk-src/` |
 
 ## 7. Keputusan Anda
@@ -193,6 +197,11 @@ HP, lalu menekan reset; pelanggan wajib menggantinya saat login berikutnya.
 - Dipanggil dari server saat halaman HPP dibuka. Harga dicocokkan lewat `kode` bahan (BHN-001, dst.), nama sebagai
   cadangan, dan harga hanya diperbarui bila satuan dasarnya sama. Bila layanan gagal atau key ditolak, harga terakhir
   yang tersimpan dipakai dan tanggal pembaruannya ditampilkan.
+- **Asal harga bahan:** tidak diinput manual. Harga awal dari `bahan.csv` (dinormalkan ke g/ml/pcs), lalu diperbarui dari
+  Supplier saat halaman HPP dibuka; bila layanan gagal, harga terakhir dipakai beserta tanggalnya. Karena itu form bahan
+  hanya berisi nama, satuan, dan batas minimum.
+- **Asal harga jual menu:** harga awal dari `menu.csv`; hanya Manajer yang mengubahnya lewat halaman Menu. Layanan
+  Supplier tidak menyediakan harga menu. Perubahan hanya berlaku untuk pesanan berikutnya.
 - Zona waktu aplikasi `Asia/Jakarta`.
 
 **Fitur opsional yang dikerjakan**
@@ -243,7 +252,8 @@ Klaim "Ya" hanya untuk butir yang sudah saya uji (di web, lewat API, dan di HP).
 - Harga Supplier diperbarui saat halaman HPP dibuka, bukan terjadwal otomatis.
 - Impor ulang CSV mengembalikan takaran resep sesuai CSV.
 - Tampilan web dirancang untuk layar desktop; tampilan layar HP untuk web tidak dibuat (tidak diwajibkan soal).
-- [ISI: tambahkan keterbatasan lain yang kamu temukan saat uji akhir, atau hapus baris ini]
+- Alamat server di APK hanya bisa diubah setelah masuk. Bila alamat bawaan tidak terjangkau di jaringan lain, ubah
+  `SERVER_BAWAAN` di `apk-src/www/index.html` lalu bangun ulang APK (bagian 4).
 
 ## 10. Referensi dan Bantuan
 
