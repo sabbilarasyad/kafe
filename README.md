@@ -235,11 +235,11 @@ Klaim "Ya" hanya untuk butir yang sudah saya uji (di web, lewat API, dan di HP).
 
 | Kode | Fitur | Dikerjakan | Langkah uji singkat |
 |---|---|---|---|
-| O1 | Ukuran Reguler dan Large | Ya | Kasir atau APK: pilih Large pada Minuman; harga +5.000; stok terpotong 1,5× untuk g dan ml; Large untuk Makanan ditolak; tampil "(Large)" di struk. |
-| O2 | Promo happy hour | Tidak | |
-| O3 | Penyesuaian stok | [ISI: Ya atau Tidak setelah diuji] | Manajer: `/stok-penyesuaian`, selisih negatif dan positif dengan alasan; selisih yang membuat stok minus ditolak; alasan kosong ditolak. |
-| O4 | Laporan jam ramai | Tidak | |
-| O5 | Reset password lewat email | Tidak | |
+| O1 | Ukuran Reguler dan Large | Ya | Pilih Large pada Minuman (Kasir atau APK): harga +Rp5.000, kopi dan susu dikali 1,5, gelas tetap; Large pada Makanan ditolak; struk menampilkan "(Large)". |
+| O2 | Promo happy hour | Tidak | - |
+| O3 | Penyesuaian stok | Ya | Manajer buka `/stok-penyesuaian`: selisih negatif dan positif dengan alasan berhasil; selisih yang membuat stok minus, alasan kosong, dan selisih 0 ditolak. |
+| O4 | Laporan jam ramai | Tidak | - |
+| O5 | Reset password lewat email | Tidak | - |
 
 ## 9. Belum selesai / keterbatasan
 
@@ -267,12 +267,4 @@ dan HP saya jalankan sendiri. Beberapa berkas lebih banyak dibuat dengan bantuan
 tampilan Blade, dan draf dokumentasi); untuk berkas-berkas itu saya memeriksa hasilnya, menjalankannya, dan
 mempelajari cara kerjanya.
 
-**Contoh perbaikan yang saya lakukan:** salah ketik pada nama method dan validasi (`findOrFall`, `withMassages`,
-`exists:menu_id`, `Qris`), route yang tertinggal di luar grup hak akses, dan migrasi yang perlu dicek ulang saat
-database dibuat dari nol.
-
-**Bagian yang saya tulis atau ubah sendiri secara langsung:** [ISI: sebutkan hanya yang benar-benar kamu tulis atau
-ubah sendiri, misalnya migrasi, model dan relasi, StafSeeder, kondisi di CekPeran, Menu::porsiTersedia, dan lainnya].
-
-Saya mempelajari bagian-bagian kode inti (pembuatan pesanan, perhitungan kebutuhan bahan, struk, status dan
-pembatalan, hak akses, Supplier, impor CSV) dan siap menjelaskannya saat wawancara.
+**Bagian yang saya tulis atau ubah sendiri secara langsung:** `PesananService`, `SupplierService`, `AuthController`, `CekPeran` (pemeriksaan peran), dan beberapa migrasi. Saya juga memperbaiki salah ketik pada `findOrFall`, `exists:menu_id`, dan `Qris`. Tampilan (Blade) tidak saya tulis sendiri; bagian itu berasal dari rekomendasi AI, lalu saya jalankan dan uji.
